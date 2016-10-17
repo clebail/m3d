@@ -3,6 +3,10 @@ createTxt/Makefile
 createTxt/createTxt
 createSVG/Makefile
 createSVG/createSVG
+createLDR/Makefile
+createLDR/createLDR
 images/*.jpg
 txts/*.txt
 svgs/*.svg
+ldrs/*.ldr
+*.o
