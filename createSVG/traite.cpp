@@ -27,7 +27,7 @@ int main(void) {
 				
 				svgStream << "\t<g>" << endl;
 			   	svgStream << carre.arg(fields[0]).arg(fields[1]).arg(STEPX).arg(STEPX).arg("red");
-				svgStream << cercle.arg(fields[0].toInt()+STEPX/2).arg(fields[1].toInt()+STEPY/2).arg(((double)STEPX)*0.3075);
+				svgStream << cercle.arg(fields[0].toInt()+STEPX/2).arg(fields[1].toInt()+STEPY/2).arg(((double)STEPX)*ROND_COEF);
 				svgStream << "\t</g>" << endl;
 			}
 			

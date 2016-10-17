@@ -13,7 +13,7 @@ int main(void) {
 	for(i=0;i<NB_IMAGE;i++) {
 		QImage image;
 		int n;
-		double angle = ((double)i)*2.0*PI/((double)NB_IMAGE);
+		double angle = ((double)i-OFFSET_ANGLE)*2.0*PI/((double)NB_IMAGE);
 		double sinA = sin(angle);
 		double cosA = cos(angle);
 		
