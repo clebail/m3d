@@ -1,0 +1,8 @@
+Makefile
+createTxt/Makefile
+createTxt/createTxt
+createSVG/Makefile
+createSVG/createSVG
+images/*.jpg
+txts/*.txt
+svgs/*.svg
