@@ -17,9 +17,13 @@ void loadDatas(QList<SPoint3d *> *points);
 void dessiner(QList<SPoint3d *> *points);
 void setColor(char codeCoul);
 
+double angleX, angleY, angleZ;
+int x, y, z;
+
 int main(void) {
     SDL_Event event;
 	QList<SPoint3d *> *points = new QList<SPoint3d *>();
+	bool fini = false;
 
     SDL_Init(SDL_INIT_VIDEO);
     atexit(SDL_Quit);
@@ -30,17 +34,63 @@ int main(void) {
     glLoadIdentity();
     gluPerspective(70, (double)640/480, 1, 1000);
     glEnable(GL_DEPTH_TEST);
+	
+	angleX = angleY = angleZ = 0.0;
+	x = z = 0;
+	y = 1000;
 
 	loadDatas(points);
     dessiner(points);
 
-    for (;;) {
+    while(!fini) {
         SDL_WaitEvent(&event);
 
         switch(event.type) {
             case SDL_QUIT:
-            exit(0);
-            break;
+				fini = true;
+				break;
+			case SDL_KEYDOWN:
+				switch(event.key.keysym.sym) {
+					case SDLK_x:
+						angleX+=event.key.keysym.mod & KMOD_LSHIFT || event.key.keysym.mod & KMOD_RSHIFT ? -10 : 10;
+						break;
+					case SDLK_y:
+						angleY+=event.key.keysym.mod & KMOD_LSHIFT || event.key.keysym.mod & KMOD_RSHIFT ? -10 : 10;
+						break;
+					case SDLK_z:
+						angleZ+=event.key.keysym.mod & KMOD_LSHIFT || event.key.keysym.mod & KMOD_RSHIFT ? -10 : 10;
+						break;
+					case SDLK_ESCAPE:
+						fini = true;
+						break;
+					case SDLK_UP:
+						z+=10;
+						break;
+					case SDLK_DOWN:
+						z-=10;
+						break;
+					case SDLK_RIGHT:
+						x+=10;
+						break;
+					case SDLK_LEFT:
+						x-=10;
+						break;
+					case SDLK_KP_PLUS:
+						y-=10;
+						break;
+					case SDLK_KP_MINUS:
+						y+=10;
+						break;
+					default:
+						break;
+				}
+				
+				qDebug() << angleX << angleY << angleZ;
+				
+				break;
+			default:
+				break;
+						
         }
         dessiner(points);
     }
@@ -86,30 +136,14 @@ void dessiner(QList<SPoint3d *> *points) {
     glMatrixMode( GL_MODELVIEW );
     glLoadIdentity( );
 
-    gluLookAt(0, 1000, 0, 0, 0, 0, 0 ,0, 1);
+    gluLookAt(x, y, z, x, 0, z, 0 ,0, 1);
+	
+	glRotated(angleZ, 0, 0, 1);
+	glRotated(angleY, 0, 1, 0);
+    glRotated(angleX, 1, 0, 0);
 
     glBegin(GL_POINTS);
 
-	/*for(int i=0;i<NB_PAS;i++) {
-		QString fileName = "../txts/"+QString::number(i+1)+".txt";
-		QFile file(fileName);
-		int z = (NB_PAS/2-i)*STEPZ;
-		
-		if(file.open(QIODevice::ReadOnly)) {
-			QTextStream txtStream(&file);
-
-			while(!txtStream.atEnd()) {
-				QString line = txtStream.readLine();
-				QStringList fields = line.split(";");
-				
-				setColor(fields[2][0].toAscii());
-				
-				glVertex3i(fields[1].toInt(), fields[0].toInt(), z);
-			}
-			
-			file.close();
-		}
-	}*/
 	for (int i=0;i<points->size();i++) {
 		SPoint3d *point = points->at(i);
 		
