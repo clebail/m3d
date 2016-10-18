@@ -5,14 +5,21 @@
 #include <QStringList>
 #include <QTextStream>
 #include <QtDebug>
+#include <QList>
 #include <cstdlib>
 #include <common.h>
 
-void dessiner(void);
+typedef struct _SPoint3d : SPoint {
+	int z;
+}SPoint3d;
+
+void loadDatas(QList<SPoint3d *> *points);
+void dessiner(QList<SPoint3d *> *points);
 void setColor(char codeCoul);
 
 int main(void) {
     SDL_Event event;
+	QList<SPoint3d *> *points = new QList<SPoint3d *>();
 
     SDL_Init(SDL_INIT_VIDEO);
     atexit(SDL_Quit);
@@ -24,7 +31,8 @@ int main(void) {
     gluPerspective(70, (double)640/480, 1, 1000);
     glEnable(GL_DEPTH_TEST);
 
-    dessiner();
+	loadDatas(points);
+    dessiner(points);
 
     for (;;) {
         SDL_WaitEvent(&event);
@@ -34,13 +42,45 @@ int main(void) {
             exit(0);
             break;
         }
-        dessiner();
+        dessiner(points);
     }
+    
+    for (int i=0;i<points->size();i++) {
+		delete points->at(i);
+    }
+    
+    delete points;
 
     return 0;
 }
 
-void dessiner() {
+void loadDatas(QList<SPoint3d *> *points) {
+	for(int i=0;i<NB_PAS;i++) {
+		QString fileName = "../txts/"+QString::number(i+1)+".txt";
+		QFile file(fileName);
+		
+		if(file.open(QIODevice::ReadOnly)) {
+			QTextStream txtStream(&file);
+
+			while(!txtStream.atEnd()) {
+				QString line = txtStream.readLine();
+				QStringList fields = line.split(";");
+				SPoint3d *point = new SPoint3d;
+				
+				point->x = fields[0].toInt();
+				point->y = fields[1].toInt();
+				point->z = (NB_PAS/2-i)*STEPZ;
+				point->coul = fields[2][0].toAscii();
+				
+				points->append(point);
+			}
+			
+			file.close();
+		}
+	}
+}
+
+void dessiner(QList<SPoint3d *> *points) {
     glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 
     glMatrixMode( GL_MODELVIEW );
@@ -50,9 +90,7 @@ void dessiner() {
 
     glBegin(GL_POINTS);
 
-    
-    
-	for(int i=0;i<NB_PAS;i++) {
+	/*for(int i=0;i<NB_PAS;i++) {
 		QString fileName = "../txts/"+QString::number(i+1)+".txt";
 		QFile file(fileName);
 		int z = (NB_PAS/2-i)*STEPZ;
@@ -71,6 +109,12 @@ void dessiner() {
 			
 			file.close();
 		}
+	}*/
+	for (int i=0;i<points->size();i++) {
+		SPoint3d *point = points->at(i);
+		
+		setColor(point->coul);
+		glVertex3i(point->y, point->x, point->z);
 	}
 
     glEnd();
