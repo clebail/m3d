@@ -5,25 +5,27 @@
 #include <QStringList>
 #include <QTextStream>
 #include <QtDebug>
+#include <QHash>
 #include <QList>
 #include <cstdlib>
 #include <common.h>
 
-typedef struct _SPoint3d : SPoint {
-	int z;
-}SPoint3d;
-
-void loadDatas(QList<SPoint3d *> *points);
-void dessiner(QList<SPoint3d *> *points);
+void loadDatas(QHash<int, QList<SPoint*> *> *map, int count);
+void dessiner(QHash<int, QList<SPoint*> *> *map);
 void setColor(char codeCoul);
 
 double angleX, angleY, angleZ;
 int x, y, z;
 
-int main(void) {
+int main(int argc, char *argv[]) {
     SDL_Event event;
-	QList<SPoint3d *> *points = new QList<SPoint3d *>();
+	QHash<int, QList<SPoint*> *> *map = new QHash<int, QList<SPoint*> *>();
 	bool fini = false;
+	int count = NB_PAS;
+	
+	if(argc > 1) {
+		count = QString(argv[1]).toInt();
+	}
 
     SDL_Init(SDL_INIT_VIDEO);
     atexit(SDL_Quit);
@@ -39,8 +41,8 @@ int main(void) {
 	x = z = 0;
 	y = 1000;
 
-	loadDatas(points);
-    dessiner(points);
+	loadDatas(map, count);
+    dessiner(map);
 
     while(!fini) {
         SDL_WaitEvent(&event);
@@ -92,37 +94,50 @@ int main(void) {
 				break;
 						
         }
-        dessiner(points);
+        dessiner(map);
     }
     
-    for (int i=0;i<points->size();i++) {
-		delete points->at(i);
-    }
+    QHashIterator<int, QList<SPoint*> *> i(*map);
+	while (i.hasNext()) {
+		QList<SPoint *> *list;
+		
+		i.next();
+		
+		list = i.value();
+		for(int j=0;j<list->size();j++) {
+			delete list->at(j);
+		}
+		
+		delete list;
+	}
     
-    delete points;
+    delete map;
 
     return 0;
 }
 
-void loadDatas(QList<SPoint3d *> *points) {
-	for(int i=0;i<NB_PAS;i++) {
+void loadDatas(QHash<int, QList<SPoint*> *> *map, int count) {
+	for(int i=0;i<count;i++) {
 		QString fileName = "../txts/"+QString::number(i+1)+".txt";
 		QFile file(fileName);
 		
 		if(file.open(QIODevice::ReadOnly)) {
 			QTextStream txtStream(&file);
-
+			int key = (NB_PAS/2-i)*STEPZ;
+			QList<SPoint *> * list = new QList<SPoint *>();
+			
+			map->insert(key, list);
+			
 			while(!txtStream.atEnd()) {
 				QString line = txtStream.readLine();
 				QStringList fields = line.split(";");
-				SPoint3d *point = new SPoint3d;
+				SPoint *point = new SPoint;
 				
 				point->x = fields[0].toInt();
 				point->y = fields[1].toInt();
-				point->z = (NB_PAS/2-i)*STEPZ;
 				point->coul = fields[2][0].toAscii();
 				
-				points->append(point);
+				list->append(point);
 			}
 			
 			file.close();
@@ -130,7 +145,7 @@ void loadDatas(QList<SPoint3d *> *points) {
 	}
 }
 
-void dessiner(QList<SPoint3d *> *points) {
+void dessiner(QHash<int, QList<SPoint*> *> *map) {
     glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 
     glMatrixMode( GL_MODELVIEW );
@@ -142,13 +157,49 @@ void dessiner(QList<SPoint3d *> *points) {
 	glRotated(angleY, 0, 1, 0);
     glRotated(angleX, 1, 0, 0);
 
-    glBegin(GL_POINTS);
+    glBegin(GL_QUADS);
 
-	for (int i=0;i<points->size();i++) {
-		SPoint3d *point = points->at(i);
+	QHashIterator<int, QList<SPoint*> *> i(*map);
+	while (i.hasNext()) {
+		int key, idx, nextKey, j;
 		
-		setColor(point->coul);
-		glVertex3i(point->y, point->x, point->z);
+		i.next();
+		
+		key = i.key();
+		idx = NB_PAS/2 - key / STEPZ;
+		
+		nextKey = (NB_PAS/2-(idx+1))*STEPZ;
+		
+		if(map->contains(nextKey)) {
+			QList<SPoint *> * list = i.value();
+			QList<SPoint *> * nextList = map->value(nextKey);
+			SPoint *point;
+			
+			for(j=0;j<list->size()-1;j++) {
+				point = list->at(j);
+						
+				setColor(point->coul);
+				glVertex3i(point->y, point->x, key);
+				point = list->at(j+1);
+				glVertex3i(point->y, point->x, key);
+				point = nextList->at(j);
+				glVertex3i(point->y, point->x, nextKey);
+				point = nextList->at(j+1);
+				glVertex3i(point->y, point->x, nextKey);
+			}
+			
+			j = list->size()-1;
+			point = list->at(j);
+						
+			setColor(point->coul);
+			glVertex3i(point->y, point->x, key);
+			point = list->at(0);
+			glVertex3i(point->y, point->x, key);
+			point = nextList->at(j);
+			glVertex3i(point->y, point->x, nextKey);
+			point = nextList->at(0);
+			glVertex3i(point->y, point->x, nextKey);
+		}
 	}
 
     glEnd();

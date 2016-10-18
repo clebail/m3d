@@ -48,13 +48,11 @@ int main(void) {
 	
 	for(j=0;j<NB_PAS;j++) {
 		QString carres = "";
-		QString fileName = "../txts/"+QString::number(j+1)+".txt";
+		QString fileName = "../txts/orig/"+QString::number(j+1)+".txt";
 		QFile file(fileName);
 
 		if(file.open(QIODevice::WriteOnly)) {
 			QTextStream stream(&file);
-			int pX=1000;
-			int pY=1000;
 			bool first = true;
 			
 			printf("<g id='%d'>\n", j);
@@ -76,12 +74,7 @@ int main(void) {
 					y -= STEPY;
 				}
 
-				if(x != pX || y != pY) {
-					carres += carre.arg(x).arg(y).arg(p->coul);
-				}
-
-				pX = x;
-				pY = y;
+				carres += carre.arg(x).arg(y).arg(p->coul);
 				
 				first = false;
 			}
