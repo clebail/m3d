@@ -20,6 +20,8 @@ int main(void) {
 		image.load("../images/"+QString::number(i+1)+".jpg");
 		for(y=n=0;y<image.size().height();y+=STEPY,n++) {
 			SPoint *p = &points[n][i];
+
+			p->coul = '0';
 			
 			for(x=0;x<image.size().width();x++) {
 				unsigned rgb = image.pixel(x, y);
@@ -32,10 +34,14 @@ int main(void) {
 					p->y = (MIDDLE - x) * sinA;
 					p->coul = '4'; //ROUGE
 					
+					image.setPixel(x, y, 0xFFFF0000);
+					
 					break;
 				}
 			}
 		}
+		
+		image.save("../images/"+QString::number(i+1)+"_1.jpg");
 	}
 	
 	printf("<svg xmlns='http://www.w3.org/2000/svg'>\n");

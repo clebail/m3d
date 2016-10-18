@@ -7,6 +7,7 @@
 #define MIDDLE				(IMAGE_WIDTH/2)
 #define STEPY				(IMAGE_HEIGHT/NB_PAS)
 #define STEPX				(IMAGE_WIDTH/NB_PAS)
+#define STEPZ				15
 #define PI					((double)3.14159)
 #define SURFACE_CASE		(STEPX*STEPY/2)
 #define OFFSET_ANGLE		2

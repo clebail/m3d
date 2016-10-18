@@ -5,6 +5,8 @@ createSVG/Makefile
 createSVG/createSVG
 createLDR/Makefile
 createLDR/createLDR
+create3d/Makefile
+create3d/create3d
 images/*.jpg
 txts/*.txt
 svgs/*.svg
