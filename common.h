@@ -1,5 +1,8 @@
 #ifndef __COMMON_H__
 #define __COMMON_H__
+
+#include <QString>
+
 #define NB_IMAGE			72
 #define IMAGE_WIDTH			1200
 #define IMAGE_HEIGHT		1200
@@ -12,6 +15,9 @@
 #define SURFACE_CASE		(STEPX*STEPY/2)
 #define OFFSET_ANGLE		2
 #define ROND_COEF			((double)0.3075)
+#define TXTS_FOLDER         (QString("../txts/"))
+#define SVGS_FOLDER         (QString("../svgs/"))
+#define LDRS_FOLDER         (QString("../ldrs/"))
 
 typedef struct _SPoint {
 	int x,y;

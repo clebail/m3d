@@ -1,11 +1,12 @@
 #include <QFile>
 #include <QtDebug>
 #include <QStringList>
+#include <QDir>
 
 #include <common.h>
 
 int main(void) {
-	QString ldrFileName = "../ldrs/result.ldr";
+    QString ldrFileName = LDRS_FOLDER+"result.ldr";
 	QFile ldrFile(ldrFileName);
 	
 	if(ldrFile.open(QIODevice::WriteOnly)) {
@@ -13,7 +14,7 @@ int main(void) {
 		QTextStream ldrStream(&ldrFile);
 	
 		for(i=0;i<NB_PAS;i++) {
-			QString txtFileName = "../txts/"+QString::number(i+1)+".txt";
+            QString txtFileName = "../txts/"+QString::number(i+1).rightJustified(4, '0')+".txt";
 			QFile txtFile(txtFileName);
 
 			if(txtFile.open(QIODevice::ReadOnly)) {

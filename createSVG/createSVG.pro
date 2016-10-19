@@ -9,3 +9,5 @@ INCLUDEPATH += . ..
 
 # Input
 SOURCES += traite.cpp
+
+HEADERS += ../common.h

@@ -123,7 +123,7 @@ void loadDatas(QHash<int, QList<SPoint*> *> *map, int count) {
 		
 		if(file.open(QIODevice::ReadOnly)) {
 			QTextStream txtStream(&file);
-			int key = (NB_PAS/2-i)*STEPZ;
+            int key = i;
 			QList<SPoint *> * list = new QList<SPoint *>();
 			
 			map->insert(key, list);
@@ -157,52 +157,58 @@ void dessiner(QHash<int, QList<SPoint*> *> *map) {
 	glRotated(angleY, 0, 1, 0);
     glRotated(angleX, 1, 0, 0);
 
-    glBegin(GL_QUADS);
+
 
 	QHashIterator<int, QList<SPoint*> *> i(*map);
 	while (i.hasNext()) {
-		int key, idx, nextKey, j;
+        int key, nextKey, j;
 		
 		i.next();
 		
 		key = i.key();
-		idx = NB_PAS/2 - key / STEPZ;
-		
-		nextKey = (NB_PAS/2-(idx+1))*STEPZ;
-		
-		if(map->contains(nextKey)) {
+        nextKey = key+1;
+
+        if(map->contains(nextKey)) {
 			QList<SPoint *> * list = i.value();
 			QList<SPoint *> * nextList = map->value(nextKey);
 			SPoint *point;
+            int z = (NB_PAS/2-key)*STEPZ;
+            int nextZ = (NB_PAS/2-nextKey)*STEPZ;
 			
 			for(j=0;j<list->size()-1;j++) {
 				point = list->at(j);
 						
+                glBegin(GL_QUADS);
+
 				setColor(point->coul);
-				glVertex3i(point->y, point->x, key);
+                glVertex3i(point->x, point->y, z);
 				point = list->at(j+1);
-				glVertex3i(point->y, point->x, key);
-				point = nextList->at(j);
-				glVertex3i(point->y, point->x, nextKey);
-				point = nextList->at(j+1);
-				glVertex3i(point->y, point->x, nextKey);
+                glVertex3i(point->x, point->y, z);
+                point = nextList->at(j+1);
+                glVertex3i(point->x, point->y, nextZ);
+                point = nextList->at(j);
+                glVertex3i(point->x, point->y, nextZ);
+
+                glEnd();
 			}
 			
 			j = list->size()-1;
 			point = list->at(j);
+
+            glBegin(GL_QUADS);
 						
 			setColor(point->coul);
-			glVertex3i(point->y, point->x, key);
+            glVertex3i(point->x, point->y, z);
 			point = list->at(0);
-			glVertex3i(point->y, point->x, key);
-			point = nextList->at(j);
-			glVertex3i(point->y, point->x, nextKey);
-			point = nextList->at(0);
-			glVertex3i(point->y, point->x, nextKey);
+            glVertex3i(point->x, point->y, z);
+            point = nextList->at(0);
+            glVertex3i(point->x, point->y, nextZ);
+            point = nextList->at(j);
+            glVertex3i(point->x, point->y, nextZ);
+
+            glEnd();
 		}
 	}
-
-    glEnd();
 
     glFlush();
     SDL_GL_SwapBuffers();

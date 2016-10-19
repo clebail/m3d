@@ -6,3 +6,5 @@ INCLUDEPATH += . .. /usr/include/SDL
 
 # Input
 SOURCES += traite.cpp
+
+HEADERS += ../common.h

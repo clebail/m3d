@@ -1,2 +1,2 @@
 TEMPLATE = subdirs
-SUBDIRS = createTxt createSVG createLDR create3d
+SUBDIRS = createTxt createSVG createLDR create3d smoothTxt

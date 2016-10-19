@@ -44,27 +44,19 @@ int main(void) {
 		image.save("../images/"+QString::number(i+1)+"_1.jpg");
 	}
 	
-	printf("<svg xmlns='http://www.w3.org/2000/svg'>\n");
-	
-	for(j=0;j<NB_PAS;j++) {
+    for(j=0;j<NB_PAS;j++) {
 		QString carres = "";
-		QString fileName = "../txts/orig/"+QString::number(j+1)+".txt";
+        QString fileName = TXTS_FOLDER+"orig/"+QString::number(j+1).rightJustified(4, '0')+".txt";
 		QFile file(fileName);
 
 		if(file.open(QIODevice::WriteOnly)) {
 			QTextStream stream(&file);
-			bool first = true;
-			
-			printf("<g id='%d'>\n", j);
-			printf("<path style='stroke:blue;stroke-width:0.5;fill:none;' d='");
 
-			for(i=0;i<NB_IMAGE;i++) {
+            for(i=0;i<NB_IMAGE;i++) {
 				SPoint *p = &points[j][i];
-				QString carre="%1;%2;%3\n";
+                QString carre="%1;%2;%3;1\n";
 				
-				printf("%c %d,%d ", first ? 'M' : 'L', p->x, p->y);
-		
-				x = (p->x/STEPX)*STEPX;
+                x = (p->x/STEPX)*STEPX;
 				if(p->x < 0 && p->x % STEPX != 0) {
 					x -= STEPX;
 				}
@@ -75,15 +67,10 @@ int main(void) {
 				}
 
 				carres += carre.arg(x).arg(y).arg(p->coul);
-				
-				first = false;
 			}
 			stream << carres;
 			
-			printf("z' />\n");
-			printf("</g>\n");
-
-			file.close();
+            file.close();
 		}
 	}
 

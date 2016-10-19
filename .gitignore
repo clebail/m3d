@@ -7,8 +7,11 @@ createLDR/Makefile
 createLDR/createLDR
 create3d/Makefile
 create3d/create3d
+smoothTxt/Makefile
+smoothTxt/smoothTxt
 images/*.jpg
-txts/*.txt
 svgs/*.svg
 ldrs/*.ldr
 *.o
+moc_*.*
+ui_*.*

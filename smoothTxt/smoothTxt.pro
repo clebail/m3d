@@ -3,11 +3,19 @@
 ######################################################################
 
 TEMPLATE = app
-TARGET = createTxt
+TARGET = smoothTxt
 DEPENDPATH += .
 INCLUDEPATH += . ..
 
 # Input
-SOURCES += traite.cpp
+SOURCES += main.cpp \
+	CMainWindow.cpp \
+    CEditWidget.cpp
 
-HEADERS += ../common.h
+FORMS += \
+    CMainWindow.ui
+
+HEADERS += \
+	CMainWindow.h \
+	../common.h \
+    CEditWidget.h
