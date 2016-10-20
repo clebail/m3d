@@ -91,22 +91,40 @@ void CMainWindow::showLayer(QString layerName) {
     editWidget->setMap(map->value(layerName));
 }
 //-----------------------------------------------------------------------------------------------
-void CMainWindow::on_layerList_itemClicked(QListWidgetItem *item) {
-    loadLayer(item->text());
-    showLayer(item->text());
+void CMainWindow::on_layerList_currentItemChanged(QListWidgetItem *current, QListWidgetItem *) {
+    loadLayer(current->text());
+    showLayer(current->text());
+}
+//-----------------------------------------------------------------------------------------------
+void CMainWindow::on_pbSave_clicked(bool) {
+    QString layerName = layerList->currentItem()->text();
+    if(map->contains(layerName)) {
+        QString txtFileName = TXTS_FOLDER+layerName+".txt";
+        QFile txtFile(txtFileName);
 
-    pbSave->setEnabled(true);
-    pbReset->setEnabled(true);
-    pbSupprimer->setEnabled(true);
+        if(txtFile.open(QIODevice::WriteOnly)) {
+            QList<QList<SPoint *>*> *mainList = map->value(layerName);
+            QTextStream txtStream(&txtFile);
+
+            for(int i=0;i<mainList->size();i++) {
+                QList<SPoint *> *list = mainList->at(i);
+
+                for(int j=0;j<list->size();j++) {
+                    SPoint *point = list->at(j);
+                    QString carre="%1;%2;%3;%4\n";
+
+                    txtStream << carre.arg(point->x).arg(point->y).arg(point->coul).arg(i+1);
+                }
+            }
+
+            txtFile.close();
+        }
+    }
 }
 //-----------------------------------------------------------------------------------------------
 void CMainWindow::on_pbSupprimer_clicked(bool) {
     if(QMessageBox::question(this, "Confirmation", "Etes vous sûre de vouloir supprimer cette couche ?", QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes) {
         //TODO
-
-        pbSave->setEnabled(false);
-        pbReset->setEnabled(false);
-        pbSupprimer->setEnabled(false);
     }
 }
 //-----------------------------------------------------------------------------------------------
@@ -119,5 +137,27 @@ void CMainWindow::on_pbReset_clicked(bool) {
 //-----------------------------------------------------------------------------------------------
 void CMainWindow::on_editWidget_mouseMove(int x, int y) {
     lblPos->setText("X: "+QString::number(x)+" Y: "+QString::number(y));
+}
+//-----------------------------------------------------------------------------------------------
+void CMainWindow::on_pbDropPoint_clicked(bool) {
+    if(QMessageBox::question(this, "Confirmation", "Etes vous sûre de vouloir supprimer ce point ?", QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes) {
+        editWidget->dropCurrentPoint();
+    }
+}
+//-----------------------------------------------------------------------------------------------
+void CMainWindow::on_pbAddPoint_clicked(bool) {
+    editWidget->addPoint();
+}
+//-----------------------------------------------------------------------------------------------
+void CMainWindow::on_pbUpPoint_clicked(bool) {
+    editWidget->upPoint();
+}
+//-----------------------------------------------------------------------------------------------
+void CMainWindow::on_pbDownPoint_clicked(bool) {
+    editWidget->downPoint();
+}
+//-----------------------------------------------------------------------------------------------
+void CMainWindow::on_pbAddGroupe_clicked(bool) {
+    editWidget->addGroupe();
 }
 //-----------------------------------------------------------------------------------------------

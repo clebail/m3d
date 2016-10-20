@@ -12,6 +12,11 @@ class CEditWidget : public QWidget {
         CEditWidget(QWidget *parent = 0);
 
         void setMap(QList<QList<SPoint *>*> *map);
+        void dropCurrentPoint(void);
+        void addPoint(void);
+        void upPoint(void);
+        void downPoint(void);
+        void addGroupe(void);
     protected:
         virtual void paintEvent(QPaintEvent * event);
         virtual void mouseMoveEvent(QMouseEvent * event);
@@ -24,6 +29,8 @@ class CEditWidget : public QWidget {
         int mouseX, mouseY;
         int selectedPoint, selectedList;
         bool mousePressed;
+
+        QColor getColor(char c);
     signals:
         void mouseMove(int x, int y);
 };

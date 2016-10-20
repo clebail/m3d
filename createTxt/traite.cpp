@@ -51,6 +51,7 @@ int main(void) {
 
 		if(file.open(QIODevice::WriteOnly)) {
 			QTextStream stream(&file);
+            int px=0, py=0;
 
             for(i=0;i<NB_IMAGE;i++) {
 				SPoint *p = &points[j][i];
@@ -66,7 +67,12 @@ int main(void) {
 					y -= STEPY;
 				}
 
-				carres += carre.arg(x).arg(y).arg(p->coul);
+                if(x != px || y != py) {
+                    carres += carre.arg(x).arg(y).arg(p->coul);
+                }
+
+                px=x;
+                py=y;
 			}
 			stream << carres;
 			

@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>695</width>
+    <width>872</width>
     <height>538</height>
    </rect>
   </property>
@@ -60,10 +60,13 @@
           </sizepolicy>
          </property>
          <layout class="QHBoxLayout" name="horizontalLayout_3">
+          <property name="bottomMargin">
+           <number>0</number>
+          </property>
           <item>
            <widget class="QPushButton" name="pbSave">
             <property name="enabled">
-             <bool>false</bool>
+             <bool>true</bool>
             </property>
             <property name="text">
              <string>Sauvegarder</string>
@@ -73,10 +76,20 @@
           <item>
            <widget class="QPushButton" name="pbReset">
             <property name="enabled">
-             <bool>false</bool>
+             <bool>true</bool>
             </property>
             <property name="text">
              <string>Reset</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="pbInsert">
+            <property name="enabled">
+             <bool>true</bool>
+            </property>
+            <property name="text">
+             <string>Insérer</string>
             </property>
            </widget>
           </item>
@@ -96,10 +109,101 @@
           <item>
            <widget class="QPushButton" name="pbSupprimer">
             <property name="enabled">
-             <bool>false</bool>
+             <bool>true</bool>
             </property>
             <property name="text">
              <string>Supprimer</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <widget class="QWidget" name="widget" native="true">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <layout class="QHBoxLayout" name="horizontalLayout_4">
+          <property name="topMargin">
+           <number>0</number>
+          </property>
+          <item>
+           <widget class="QPushButton" name="pbAddPoint">
+            <property name="toolTip">
+             <string>Ajouter un point</string>
+            </property>
+            <property name="text">
+             <string>+ point</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="pbDropPoint">
+            <property name="toolTip">
+             <string>Supprimer le point ciourant</string>
+            </property>
+            <property name="text">
+             <string>- point</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="pbUpPoint">
+            <property name="toolTip">
+             <string>Monter le point</string>
+            </property>
+            <property name="text">
+             <string>Up point</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="pbDownPoint">
+            <property name="toolTip">
+             <string>Descendre le point</string>
+            </property>
+            <property name="text">
+             <string>Dn point</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="pbColor">
+            <property name="toolTip">
+             <string>Modifier la couleur du point</string>
+            </property>
+            <property name="text">
+             <string>couleur</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <spacer name="horizontalSpacer_2">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item>
+           <widget class="QPushButton" name="pbAddGroupe">
+            <property name="enabled">
+             <bool>true</bool>
+            </property>
+            <property name="toolTip">
+             <string>Ajouter un groupe</string>
+            </property>
+            <property name="text">
+             <string>+ groupe</string>
             </property>
            </widget>
           </item>

@@ -19,10 +19,16 @@ class CMainWindow : public QMainWindow, private Ui::CMainWindow {
         void loadLayer(QString layerName, bool force = false);
         void showLayer(QString layerName);
     private slots:
-        void on_layerList_itemClicked(QListWidgetItem *item);
+        void on_layerList_currentItemChanged(QListWidgetItem *current, QListWidgetItem *previous);
+        void on_pbSave_clicked(bool checked = false);
         void on_pbSupprimer_clicked(bool checked = false);
         void on_pbReset_clicked(bool checked = false);
         void on_editWidget_mouseMove(int x, int y);
+        void on_pbDropPoint_clicked(bool checked = false);
+        void on_pbAddPoint_clicked(bool checked = false);
+        void on_pbUpPoint_clicked(bool checked = false);
+        void on_pbDownPoint_clicked(bool checked = false);
+        void on_pbAddGroupe_clicked(bool checked = false);
 };
 //-----------------------------------------------------------------------------------------------
 #endif // __CMAINWINDOW_H__
