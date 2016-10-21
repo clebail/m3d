@@ -17,6 +17,7 @@ class CEditWidget : public QWidget {
         void upPoint(void);
         void downPoint(void);
         void addGroupe(void);
+        void setColor(QString color);
     protected:
         virtual void paintEvent(QPaintEvent * event);
         virtual void mouseMoveEvent(QMouseEvent * event);
@@ -30,7 +31,7 @@ class CEditWidget : public QWidget {
         int selectedPoint, selectedList;
         bool mousePressed;
 
-        QColor getColor(char c);
+        QColor getColor(QString coul);
     signals:
         void mouseMove(int x, int y);
 };

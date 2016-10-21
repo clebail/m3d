@@ -21,6 +21,6 @@
 
 typedef struct _SPoint {
 	int x,y;
-	char coul;
+    QString coul;
 }SPoint;
 #endif //__COMMON_H__

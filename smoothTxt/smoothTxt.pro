@@ -10,12 +10,17 @@ INCLUDEPATH += . ..
 # Input
 SOURCES += main.cpp \
 	CMainWindow.cpp \
-    CEditWidget.cpp
+    CEditWidget.cpp \
+    CChooseColorDialog.cpp \
+    CColorLabel.cpp
 
 FORMS += \
-    CMainWindow.ui
+    CMainWindow.ui \
+    CChooseColorDialog.ui
 
 HEADERS += \
 	CMainWindow.h \
 	../common.h \
-    CEditWidget.h
+    CEditWidget.h \
+    CChooseColorDialog.h \
+    CColorLabel.h

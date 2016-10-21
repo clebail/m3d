@@ -15,7 +15,7 @@
 
 void loadDatas(QHash<int, QList<QList<SPoint*>*>*> *map, int count);
 void dessiner(QHash<int, QList<QList<SPoint*>*>*> *map);
-void setColor(char codeCoul);
+void setColor(QString codeCoul);
 
 double angleX, angleY, angleZ;
 int x, y, z;
@@ -141,7 +141,7 @@ void loadDatas(QHash<int, QList<QList<SPoint*>*>*> *map, int count) {
 
                 point->x = fields[0].toInt();
                 point->y = fields[1].toInt();
-                point->coul = fields[2][0].toAscii();
+                point->coul = fields[2];
 
                 if(id != oldId) {
                     list = new QList<SPoint *>();
@@ -227,10 +227,12 @@ void dessiner(QHash<int,  QList<QList<SPoint*>*>*> *map) {
     SDL_GL_SwapBuffers();
 }
 
-void setColor(char codeCoul) {
-	switch(codeCoul) {
-		case '4':
-		default:
-			glColor3ub(255,0,0);
-	}
+void setColor(QString codeCoul) {
+    if(codeCoul == "15") {
+        glColor3ub(255, 255, 255);
+    }else if(codeCoul == "4") {
+        glColor3ub(255, 0, 0);
+    }else {
+        glColor3ub(0, 0, 0);
+    }
 }

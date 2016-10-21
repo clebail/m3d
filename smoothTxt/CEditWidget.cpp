@@ -104,6 +104,14 @@ void CEditWidget::addGroupe(void) {
     }
 }
 //-----------------------------------------------------------------------------------------------
+void CEditWidget::setColor(QString color) {
+    if(map != 0 && selectedList != -1 && selectedPoint != -1) {
+         map->at(selectedList)->at(selectedPoint)->coul = color;
+
+         repaint();
+    }
+}
+//-----------------------------------------------------------------------------------------------
 void CEditWidget::paintEvent(QPaintEvent * event) {
     QPainter painter(this);
     QRect rect = event->rect().adjusted(0, 0, -1, -1);
@@ -149,7 +157,7 @@ void CEditWidget::paintEvent(QPaintEvent * event) {
                 SPoint *p = list->at(j);
                 QColor color = getColor(p->coul);
 
-                painter.setPen(color);
+                painter.setPen(Qt::black);
                 painter.setBrush(color);
 
                 painter.drawEllipse(p->x+zeroX-STEPX/4, p->y+zeroY-STEPY/4, STEPX/2, STEPY/2);
@@ -237,10 +245,13 @@ void CEditWidget::mouseReleaseEvent(QMouseEvent *) {
     mousePressed = false;
 }
 //-----------------------------------------------------------------------------------------------
-QColor CEditWidget::getColor(char c) {
-    switch(c) {
-        case '4':
-            return Qt::red;
+QColor CEditWidget::getColor(QString coul) {
+    if(coul == "15") {
+        return Qt::white;
+    }
+
+    if(coul == "4") {
+        return Qt::red;
     }
 
     return Qt::black;

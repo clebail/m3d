@@ -4,6 +4,7 @@
 #include <QStringList>
 #include <QMessageBox>
 #include "CMainWindow.h"
+#include "CChooseColorDialog.h"
 //-----------------------------------------------------------------------------------------------
 CMainWindow::CMainWindow(QWidget *parent) : QMainWindow(parent) {
     setupUi(this);
@@ -69,7 +70,7 @@ void CMainWindow::loadLayer(QString layerName, bool force) {
 
                 point->x = fields[0].toInt();
                 point->y = fields[1].toInt();
-                point->coul = fields[2][0].toAscii();
+                point->coul = fields[2];
 
                 if(id != oldId) {
                     list = new QList<SPoint *>();
@@ -159,5 +160,15 @@ void CMainWindow::on_pbDownPoint_clicked(bool) {
 //-----------------------------------------------------------------------------------------------
 void CMainWindow::on_pbAddGroupe_clicked(bool) {
     editWidget->addGroupe();
+}
+//-----------------------------------------------------------------------------------------------
+void CMainWindow::on_pbColor_clicked(bool) {
+    CChooseColorDialog *chooseColorDialog = new CChooseColorDialog(this);
+
+    if(chooseColorDialog->exec() == QDialog::Accepted) {
+        editWidget->setColor(chooseColorDialog->getColor());
+    }
+
+    delete chooseColorDialog;
 }
 //-----------------------------------------------------------------------------------------------

@@ -9,7 +9,7 @@
 #include "ui_CMainWindow.h"
 //-----------------------------------------------------------------------------------------------
 class CMainWindow : public QMainWindow, private Ui::CMainWindow {
-        Q_OBJECT
+    Q_OBJECT
     public:
         CMainWindow(QWidget *parent=0);
         ~CMainWindow(void);
@@ -29,6 +29,7 @@ class CMainWindow : public QMainWindow, private Ui::CMainWindow {
         void on_pbUpPoint_clicked(bool checked = false);
         void on_pbDownPoint_clicked(bool checked = false);
         void on_pbAddGroupe_clicked(bool checked = false);
+        void on_pbColor_clicked(bool checked = false);
 };
 //-----------------------------------------------------------------------------------------------
 #endif // __CMAINWINDOW_H__
