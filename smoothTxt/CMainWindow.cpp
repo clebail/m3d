@@ -78,8 +78,6 @@ void CMainWindow::saveLayer(QString layer, QString fileName) {
     if(map->contains(layer)) {
         QFile txtFile(fileName);
 
-        qDebug() << "Sauve" << layer << "dans" << fileName;
-
         if(txtFile.open(QIODevice::WriteOnly)) {
             QList<QList<SPoint *>*> *mainList = map->value(layer);
             QTextStream txtStream(&txtFile);
@@ -149,8 +147,8 @@ void CMainWindow::on_pbSupprimer_clicked(bool) {
            saveLayer(layerList->item(i)->text(), fileName);
         }
 
-        //QFile f(TXTS_FOLDER+layerList->item(layerList->count()-1)->text()+".txt");
-        //f.remove();
+        QFile f(TXTS_FOLDER+layerList->item(layerList->count()-1)->text()+".txt");
+        f.remove();
 
         clearLayers();
         loadLayers();
