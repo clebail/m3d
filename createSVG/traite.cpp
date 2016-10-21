@@ -4,6 +4,8 @@
 
 #include <common.h>
 
+QString getColor(QString color);
+
 int main(int argc, char **) {
 	int i;
     bool drawLego;
@@ -34,7 +36,7 @@ int main(int argc, char **) {
                     QString cercle = "\t\t<circle cx='%1' cy='%2' r='%3' style='stroke:black;fill:none;' />\n";
 
                     svgStream << "\t<g>" << endl;
-                    svgStream << carre.arg(fields[0]).arg(fields[1]).arg(STEPX).arg(STEPX).arg("red");
+                    svgStream << carre.arg(fields[0]).arg(fields[1]).arg(STEPX).arg(STEPX).arg(getColor(fields[2]));
                     svgStream << cercle.arg(fields[0].toInt()+STEPX/2).arg(fields[1].toInt()+STEPY/2).arg(((double)STEPX)*ROND_COEF);
                     svgStream << "\t</g>" << endl;
                 } else {
@@ -119,4 +121,16 @@ int main(int argc, char **) {
 	}
 
 	return 0;
+}
+
+QString getColor(QString color) {
+    if(color == "15") {
+        return "white";
+    }
+
+    if(color == "4") {
+        return "red";
+    }
+
+    return "black";
 }
