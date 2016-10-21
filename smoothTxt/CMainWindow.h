@@ -18,6 +18,8 @@ class CMainWindow : public QMainWindow, private Ui::CMainWindow {
         void loadLayers(void);
         void loadLayer(QString layerName, bool force = false);
         void showLayer(QString layerName);
+        void saveLayer(QString layer, QString fileName);
+        void clearLayers(void);
     private slots:
         void on_layerList_currentItemChanged(QListWidgetItem *current, QListWidgetItem *previous);
         void on_pbSave_clicked(bool checked = false);

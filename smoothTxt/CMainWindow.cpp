@@ -15,25 +15,7 @@ CMainWindow::CMainWindow(QWidget *parent) : QMainWindow(parent) {
 }
 //-----------------------------------------------------------------------------------------------
 CMainWindow::~CMainWindow(void) {
-    QHashIterator<QString, QList<QList<SPoint *>*>*> i(*map);
-    while (i.hasNext()) {
-        int j, k;
-        QList<QList<SPoint *>*> *list;
-
-        i.next();
-        list = i.value();
-
-        for(j=0;j<list->size();j++) {
-            QList<SPoint *> *l = list->at(j);
-
-            for(k=0;k<l->size();k++) {
-                delete l->at(k);
-            }
-
-            delete l;
-        }
-        delete list;
-    }
+    clearLayers();
 
     delete map;
 }
@@ -92,19 +74,14 @@ void CMainWindow::showLayer(QString layerName) {
     editWidget->setMap(map->value(layerName));
 }
 //-----------------------------------------------------------------------------------------------
-void CMainWindow::on_layerList_currentItemChanged(QListWidgetItem *current, QListWidgetItem *) {
-    loadLayer(current->text());
-    showLayer(current->text());
-}
-//-----------------------------------------------------------------------------------------------
-void CMainWindow::on_pbSave_clicked(bool) {
-    QString layerName = layerList->currentItem()->text();
-    if(map->contains(layerName)) {
-        QString txtFileName = TXTS_FOLDER+layerName+".txt";
-        QFile txtFile(txtFileName);
+void CMainWindow::saveLayer(QString layer, QString fileName) {
+    if(map->contains(layer)) {
+        QFile txtFile(fileName);
+
+        qDebug() << "Sauve" << layer << "dans" << fileName;
 
         if(txtFile.open(QIODevice::WriteOnly)) {
-            QList<QList<SPoint *>*> *mainList = map->value(layerName);
+            QList<QList<SPoint *>*> *mainList = map->value(layer);
             QTextStream txtStream(&txtFile);
 
             for(int i=0;i<mainList->size();i++) {
@@ -123,9 +100,62 @@ void CMainWindow::on_pbSave_clicked(bool) {
     }
 }
 //-----------------------------------------------------------------------------------------------
+void CMainWindow::clearLayers(void) {
+    QHashIterator<QString, QList<QList<SPoint *>*>*> i(*map);
+    while (i.hasNext()) {
+        int j, k;
+        QList<QList<SPoint *>*> *list;
+
+        i.next();
+        list = i.value();
+
+        for(j=0;j<list->size();j++) {
+            QList<SPoint *> *l = list->at(j);
+
+            for(k=0;k<l->size();k++) {
+                delete l->at(k);
+            }
+
+            delete l;
+        }
+
+        map->remove(i.key());
+
+        delete list;
+    }
+}
+//-----------------------------------------------------------------------------------------------
+void CMainWindow::on_layerList_currentItemChanged(QListWidgetItem *current, QListWidgetItem *) {
+    loadLayer(current->text());
+    showLayer(current->text());
+}
+//-----------------------------------------------------------------------------------------------
+void CMainWindow::on_pbSave_clicked(bool) {
+    QString layerName = layerList->currentItem()->text();
+    QString txtFileName = TXTS_FOLDER+layerName+".txt";
+
+    saveLayer(layerName, txtFileName);
+}
+//-----------------------------------------------------------------------------------------------
 void CMainWindow::on_pbSupprimer_clicked(bool) {
     if(QMessageBox::question(this, "Confirmation", "Etes vous sûre de vouloir supprimer cette couche ?", QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes) {
-        //TODO
+        int currentIndex = layerList->currentRow();
+        int i;
+
+        for(i=currentIndex+1;i<layerList->count();i++) {
+           QString fileName = TXTS_FOLDER+layerList->item(i-1)->text()+".txt";
+
+           loadLayer(layerList->item(i)->text());
+           saveLayer(layerList->item(i)->text(), fileName);
+        }
+
+        //QFile f(TXTS_FOLDER+layerList->item(layerList->count()-1)->text()+".txt");
+        //f.remove();
+
+        clearLayers();
+        loadLayers();
+        loadLayer(layerList->item(0)->text(), true);
+        layerList->setCurrentRow(0);
     }
 }
 //-----------------------------------------------------------------------------------------------

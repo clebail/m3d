@@ -84,6 +84,13 @@
            </widget>
           </item>
           <item>
+           <widget class="QPushButton" name="pdAdd">
+            <property name="text">
+             <string>Ajouter</string>
+            </property>
+           </widget>
+          </item>
+          <item>
            <widget class="QPushButton" name="pbInsert">
             <property name="enabled">
              <bool>true</bool>
@@ -240,6 +247,20 @@
    <container>1</container>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>layerList</tabstop>
+  <tabstop>pbSave</tabstop>
+  <tabstop>pbReset</tabstop>
+  <tabstop>pdAdd</tabstop>
+  <tabstop>pbInsert</tabstop>
+  <tabstop>pbSupprimer</tabstop>
+  <tabstop>pbAddPoint</tabstop>
+  <tabstop>pbDropPoint</tabstop>
+  <tabstop>pbUpPoint</tabstop>
+  <tabstop>pbDownPoint</tabstop>
+  <tabstop>pbColor</tabstop>
+  <tabstop>pbAddGroupe</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>
