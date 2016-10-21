@@ -84,7 +84,7 @@
            </widget>
           </item>
           <item>
-           <widget class="QPushButton" name="pdAdd">
+           <widget class="QPushButton" name="pbAdd">
             <property name="text">
              <string>Ajouter</string>
             </property>
@@ -228,6 +228,14 @@
            <verstretch>0</verstretch>
           </sizepolicy>
          </property>
+         <property name="font">
+          <font>
+           <family>Courier New</family>
+           <pointsize>14</pointsize>
+           <weight>75</weight>
+           <bold>true</bold>
+          </font>
+         </property>
          <property name="text">
           <string>X:0 Y:0</string>
          </property>
@@ -251,7 +259,7 @@
   <tabstop>layerList</tabstop>
   <tabstop>pbSave</tabstop>
   <tabstop>pbReset</tabstop>
-  <tabstop>pdAdd</tabstop>
+  <tabstop>pbAdd</tabstop>
   <tabstop>pbInsert</tabstop>
   <tabstop>pbSupprimer</tabstop>
   <tabstop>pbAddPoint</tabstop>

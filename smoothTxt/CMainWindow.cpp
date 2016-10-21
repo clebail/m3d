@@ -135,6 +135,22 @@ void CMainWindow::on_pbSave_clicked(bool) {
     saveLayer(layerName, txtFileName);
 }
 //-----------------------------------------------------------------------------------------------
+void CMainWindow::on_pbAdd_clicked(bool) {
+    QString nextLayer = QString::number(layerList->item(layerList->count()-1)->text().toInt()+1).rightJustified(4, '0');
+    QString fileName = TXTS_FOLDER+nextLayer+".txt";
+
+    qDebug() << "Create" << nextLayer << "on" << fileName;
+
+    map->insert(nextLayer, new QList<QList<SPoint *>*>());
+
+    saveLayer(nextLayer, fileName);
+
+    clearLayers();
+    loadLayers();
+    loadLayer(layerList->item(layerList->count()-1)->text(), true);
+    layerList->setCurrentRow(layerList->count()-1);
+}
+//-----------------------------------------------------------------------------------------------
 void CMainWindow::on_pbSupprimer_clicked(bool) {
     if(QMessageBox::question(this, "Confirmation", "Etes vous sûre de vouloir supprimer cette couche ?", QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes) {
         int currentIndex = layerList->currentRow();
