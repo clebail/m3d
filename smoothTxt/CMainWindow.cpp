@@ -139,8 +139,6 @@ void CMainWindow::on_pbAdd_clicked(bool) {
     QString nextLayer = QString::number(layerList->item(layerList->count()-1)->text().toInt()+1).rightJustified(4, '0');
     QString fileName = TXTS_FOLDER+nextLayer+".txt";
 
-    qDebug() << "Create" << nextLayer << "on" << fileName;
-
     map->insert(nextLayer, new QList<QList<SPoint *>*>());
 
     saveLayer(nextLayer, fileName);
