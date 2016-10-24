@@ -396,9 +396,9 @@ void CEditWidget::remplir(SPoint *p) {
         list->append(newP);
 
         remplir(newP);
+        newP = new SPoint;
     }
 
-    newP = new SPoint;
     newP->coul = p->coul;
     newP->x = p->x-STEPX;
     newP->y = p->y;
@@ -406,9 +406,10 @@ void CEditWidget::remplir(SPoint *p) {
         list->append(newP);
 
         remplir(newP);
+        newP = new SPoint;
     }
 
-    newP = new SPoint;
+
     newP->coul = p->coul;
     newP->x = p->x;
     newP->y = p->y+STEPY;
@@ -416,9 +417,9 @@ void CEditWidget::remplir(SPoint *p) {
         list->append(newP);
 
         remplir(newP);
+        newP = new SPoint;
     }
 
-    newP = new SPoint;
     newP->coul = p->coul;
     newP->x = p->x;
     newP->y = p->y-STEPY;
@@ -426,5 +427,10 @@ void CEditWidget::remplir(SPoint *p) {
         list->append(newP);
 
         remplir(newP);
-    }}
+
+        return;
+    }
+
+    delete newP;
+}
 //-----------------------------------------------------------------------------------------------
