@@ -112,6 +112,15 @@ void CEditWidget::setColor(QString color) {
     }
 }
 //-----------------------------------------------------------------------------------------------
+void CEditWidget::remplir(void) {
+    if(map != 0 && selectedList != -1) {
+         remplirLine();
+         remplirSurface();
+
+         repaint();
+    }
+}
+//-----------------------------------------------------------------------------------------------
 void CEditWidget::paintEvent(QPaintEvent * event) {
     QPainter painter(this);
     QRect rect = event->rect().adjusted(0, 0, -1, -1);
@@ -256,4 +265,166 @@ QColor CEditWidget::getColor(QString coul) {
 
     return Qt::black;
 }
+//-----------------------------------------------------------------------------------------------
+void CEditWidget::remplirLine(void) {
+    int i;
+    QList<SPoint *> *list = map->at(selectedList);
+
+    i=0;
+    while(i<list->size()-1) {
+        remplirPoint(list, i, i+1);
+        i++;
+    }
+    remplirPoint(list, list->size()-1, 0);
+}
+//-----------------------------------------------------------------------------------------------
+void CEditWidget::remplirPoint(QList<SPoint *> *list, int idxP1, int idxP2) {
+    SPoint *p1 = list->at(idxP1);
+    SPoint *p2 = list->at(idxP2);
+    int diffX = p1->x - p2->x, diffY = p1->y - p2->y;
+
+    if(abs(diffX) > STEPX || abs(diffY) > STEPY) {
+        SPoint *p = new SPoint;
+
+        p->x = p1->x + (diffX > 0 ? -STEPX : diffX < 0 ? STEPX : 0);
+        p->y = p1->y + (diffY > 0 ? -STEPY : diffY < 0 ? STEPY : 0);
+
+        p->coul = p1->coul;
+
+        list->insert(idxP2, p);
+        remplirPoint(list, idxP2, idxP2+1);
+    }
+}
+//-----------------------------------------------------------------------------------------------
+void CEditWidget::remplirSurface(void) {
+    QList<SPoint *> *list = map->at(selectedList);
+    SPoint *p = list->last();
+    SPoint *newP = new SPoint;
+
+    newP->coul = p->coul;
+
+    newP->x = p->x+STEPX;
+    newP->y = p->y;
+    if(!inList(newP) && inSurface(newP)) {
+        list->append(newP);
+        remplir(newP);
+
+        return;
+    }
+
+    newP->x = p->x-STEPX;
+    newP->y = p->y;
+    if(!inList(newP) && inSurface(newP)) {
+        list->append(newP);
+        remplir(newP);
+
+        return;
+    }
+
+    newP->x = p->x;
+    newP->y = p->y+STEPY;
+    if(!inList(newP) && inSurface(newP)) {
+        list->append(newP);
+        remplir(newP);
+
+        return;
+    }
+
+    newP->x = p->x;
+    newP->y = p->y-STEPY;
+    if(!inList(newP) && inSurface(newP)) {
+        list->append(newP);
+        remplir(newP);
+
+        return;
+    }
+
+    delete newP;
+}
+//-----------------------------------------------------------------------------------------------
+bool CEditWidget::inList(SPoint *p) {
+    QList<SPoint *> *list = map->at(selectedList);
+    int i;
+
+    for(i=0;i<list->size();i++) {
+        SPoint *pv = list->at(i);
+
+        if(pv->x == p->x && pv->y == p->y) {
+            return true;
+        }
+    }
+
+    return false;
+}
+//-----------------------------------------------------------------------------------------------
+bool CEditWidget::inSurface(SPoint *p) {
+    QList<SPoint *> *list = map->at(selectedList);
+    int cn=0, i;
+
+    for(i=0;i<list->size()-1;i++) {
+        SPoint *pv = list->at(i);
+        SPoint *pv1 = list->at(i+1);
+
+        cn+=testPoint(p, pv, pv1);
+    }
+
+    cn+=testPoint(p, list->last(), list->first());
+
+    return cn % 2 != 0;
+}
+//-----------------------------------------------------------------------------------------------
+int CEditWidget::testPoint(SPoint *p, SPoint *pv, SPoint *pv1) {
+    if(((pv->y <= p->y) && (pv1->y > p->y)) || ((pv->y > p->y) && (pv1->y <= p->y))) {
+        float vt = (float)(p->y - pv->y) / (pv1->y - pv->y);
+        if(p->x < pv->x + vt * (pv1->x - pv->x)) {
+            return 1;
+        }
+    }
+
+    return 0;
+}
+//-----------------------------------------------------------------------------------------------
+void CEditWidget::remplir(SPoint *p) {
+    QList<SPoint *> *list = map->at(selectedList);
+    SPoint *newP = 0;
+
+    newP = new SPoint;
+    newP->coul = p->coul;
+    newP->x = p->x+STEPX;
+    newP->y = p->y;
+    if(!inList(newP)) {
+        list->append(newP);
+
+        remplir(newP);
+    }
+
+    newP = new SPoint;
+    newP->coul = p->coul;
+    newP->x = p->x-STEPX;
+    newP->y = p->y;
+    if(!inList(newP)) {
+        list->append(newP);
+
+        remplir(newP);
+    }
+
+    newP = new SPoint;
+    newP->coul = p->coul;
+    newP->x = p->x;
+    newP->y = p->y+STEPY;
+    if(!inList(newP)) {
+        list->append(newP);
+
+        remplir(newP);
+    }
+
+    newP = new SPoint;
+    newP->coul = p->coul;
+    newP->x = p->x;
+    newP->y = p->y-STEPY;
+    if(!inList(newP)) {
+        list->append(newP);
+
+        remplir(newP);
+    }}
 //-----------------------------------------------------------------------------------------------

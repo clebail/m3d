@@ -192,14 +192,6 @@ void CMainWindow::on_pbAddPoint_clicked(bool) {
     editWidget->addPoint();
 }
 //-----------------------------------------------------------------------------------------------
-void CMainWindow::on_pbUpPoint_clicked(bool) {
-    editWidget->upPoint();
-}
-//-----------------------------------------------------------------------------------------------
-void CMainWindow::on_pbDownPoint_clicked(bool) {
-    editWidget->downPoint();
-}
-//-----------------------------------------------------------------------------------------------
 void CMainWindow::on_pbAddGroupe_clicked(bool) {
     editWidget->addGroupe();
 }
@@ -212,5 +204,9 @@ void CMainWindow::on_pbColor_clicked(bool) {
     }
 
     delete chooseColorDialog;
+}
+//-----------------------------------------------------------------------------------------------
+void CMainWindow::on_pbRemplir_clicked(bool) {
+    editWidget->remplir();
 }
 //-----------------------------------------------------------------------------------------------

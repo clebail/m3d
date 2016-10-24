@@ -29,10 +29,9 @@ class CMainWindow : public QMainWindow, private Ui::CMainWindow {
         void on_editWidget_mouseMove(int x, int y);
         void on_pbDropPoint_clicked(bool checked = false);
         void on_pbAddPoint_clicked(bool checked = false);
-        void on_pbUpPoint_clicked(bool checked = false);
-        void on_pbDownPoint_clicked(bool checked = false);
         void on_pbAddGroupe_clicked(bool checked = false);
         void on_pbColor_clicked(bool checked = false);
+        void on_pbRemplir_clicked(bool checked = false);
 };
 //-----------------------------------------------------------------------------------------------
 #endif // __CMAINWINDOW_H__

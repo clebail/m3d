@@ -159,32 +159,22 @@
            </widget>
           </item>
           <item>
-           <widget class="QPushButton" name="pbUpPoint">
-            <property name="toolTip">
-             <string>Monter le point</string>
-            </property>
-            <property name="text">
-             <string>Up point</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QPushButton" name="pbDownPoint">
-            <property name="toolTip">
-             <string>Descendre le point</string>
-            </property>
-            <property name="text">
-             <string>Dn point</string>
-            </property>
-           </widget>
-          </item>
-          <item>
            <widget class="QPushButton" name="pbColor">
             <property name="toolTip">
              <string>Modifier la couleur du point</string>
             </property>
             <property name="text">
              <string>couleur</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="pbRemplir">
+            <property name="toolTip">
+             <string>Remplir la zone avec des points</string>
+            </property>
+            <property name="text">
+             <string>remplir</string>
             </property>
            </widget>
           </item>
@@ -264,8 +254,6 @@
   <tabstop>pbSupprimer</tabstop>
   <tabstop>pbAddPoint</tabstop>
   <tabstop>pbDropPoint</tabstop>
-  <tabstop>pbUpPoint</tabstop>
-  <tabstop>pbDownPoint</tabstop>
   <tabstop>pbColor</tabstop>
   <tabstop>pbAddGroupe</tabstop>
  </tabstops>
