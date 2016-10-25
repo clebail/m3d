@@ -18,6 +18,7 @@
 #define TXTS_FOLDER         (QString("../txts/"))
 #define SVGS_FOLDER         (QString("../svgs/"))
 #define LDRS_FOLDER         (QString("../ldrs/"))
+#define BINVOX_FOLDER       (QString("../binvox/"))
 
 typedef struct _SPoint {
 	int x,y;
