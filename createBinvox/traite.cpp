@@ -15,6 +15,9 @@ int main(int argc, char *argv[]) {
     QList<QHash<int, int>*> *mainList = new QList<QHash<int, int>*>();
     QString binvoxFileName = BINVOX_FOLDER+"out.binvox";
     FILE *binvoxFile;
+    QString binvoxColorFileName = binvoxFileName+".color";
+    FILE *binvoxColorFile;
+
     int maxX = 0, maxY = 0, maxZ;
 
     if(argc != 1) {
@@ -23,73 +26,96 @@ int main(int argc, char *argv[]) {
 
     loadDatas(max, mainList, maxX, maxY, maxZ);
 
-    if((binvoxFile=fopen(binvoxFileName.toAscii().data(), "wb")) != 0) {
-        int x, y, z;
-        unsigned char value=0, count=0;
+    int dim = MAX(MAX(maxX, maxY), maxZ);
 
-        fprintf(binvoxFile, "#binvox 1\n");
-        fprintf(binvoxFile, "dim %d %d %d\n", maxZ, maxY, maxX);
-        fprintf(binvoxFile, "translate 0.0 0.0 0.0\n");
-        fprintf(binvoxFile, "scale 1.0\n");
-        fprintf(binvoxFile, "data\n");
+    if((binvoxFile = fopen(binvoxFileName.toAscii().data(), "wb")) != 0) {
+        if((binvoxColorFile = fopen(binvoxColorFileName.toAscii().data(), "w")) != 0) {
+            int x, y, z;
+            unsigned char value=0, count=0;
 
-        for(y=0;y<maxY;y++) {
-            for(x=0;x<maxX;x++) {
-                int key = y*maxX+x;
+            fprintf(binvoxFile, "#binvox 1\n");
+            fprintf(binvoxFile, "dim %d %d %d\n", dim, dim, dim);
+            fprintf(binvoxFile, "translate 0.0 0.0 0.0\n");
+            fprintf(binvoxFile, "scale 1.0\n");
+            fprintf(binvoxFile, "data\n");
 
-                for(z=0;z<maxZ;z++) {
-                    QHash<int ,int> *hash = mainList->at(z);
+            for(x=0;x<dim;x++) {
+                for(y=0;y<dim;y++) {
+                    int key = y*maxX+x;
 
-                    if(hash->contains(key)) {
-                        if(value == 1) {
-                            count++;
+                    for(z=0;z<dim;z++) {
+                        if(z < mainList->size()) {
+                            QHash<int ,int> *hash = mainList->at(z);
+
+                            if(hash->contains(key)) {
+                                fprintf(binvoxColorFile, "%d;%d;%d;%d\n", x, y, z, hash->value(key));
+
+                                if(value == 1) {
+                                    count++;
+                                }else {
+                                    if(count != 0) {
+                                        fwrite(&value, sizeof(unsigned char), 1, binvoxFile);
+                                        fwrite(&count, sizeof(unsigned char), 1, binvoxFile);
+
+                                        qDebug() << "write" << (int)count << (int)value;
+                                    }
+
+                                    count = 1;
+                                    value = 1;
+                                }
+                            }else {
+                                if(value == 0) {
+                                    count++;
+                                }else {
+                                    if(count != 0) {
+                                        fwrite(&value, sizeof(unsigned char), 1, binvoxFile);
+                                        fwrite(&count, sizeof(unsigned char), 1, binvoxFile);
+
+                                        qDebug() << "write" << (int)count << (int)value;
+                                    }
+
+                                    count = 1;
+                                    value = 0;
+                                }
+                            }
                         }else {
-                            if(count != 0) {
-                                fwrite(&value, sizeof(unsigned char), 1, binvoxFile);
-                                fwrite(&count, sizeof(unsigned char), 1, binvoxFile);
+                            if(value == 1) {
+                                if(count != 0) {
+                                    fwrite(&value, sizeof(unsigned char), 1, binvoxFile);
+                                    fwrite(&count, sizeof(unsigned char), 1, binvoxFile);
 
-                                qDebug() << "write" << (int)count << (int)value;
+                                    qDebug() << "write" << (int)count << (int)value;
+
+                                    count = 0;
+                                }
+                                value = 0;
                             }
 
-                            count = 1;
-                            value = 1;
-                        }
-                    }else {
-                        if(value == 0) {
                             count++;
-                        }else {
-                            if(count != 0) {
-                                fwrite(&value, sizeof(unsigned char), 1, binvoxFile);
-                                fwrite(&count, sizeof(unsigned char), 1, binvoxFile);
-
-                                qDebug() << "write" << (int)count << (int)value;
-                            }
-
-                            count = 1;
-                            value = 0;
                         }
-                    }
 
-                    if(count == 255) {
-                        fwrite(&value, sizeof(unsigned char), 1, binvoxFile);
-                        fwrite(&count, sizeof(unsigned char), 1, binvoxFile);
+                        if(count == 255) {
+                            fwrite(&value, sizeof(unsigned char), 1, binvoxFile);
+                            fwrite(&count, sizeof(unsigned char), 1, binvoxFile);
 
-                        qDebug() << "write" << (int)count << (int)value;
+                            qDebug() << "write" << (int)count << (int)value;
 
-                        count=0;
+                            count = 0;
+                        }
                     }
                 }
             }
+
+            if(count != 0) {
+                fwrite(&value, sizeof(unsigned char), 1, binvoxFile);
+                fwrite(&count, sizeof(unsigned char), 1, binvoxFile);
+
+                qDebug() << "write" << (int)count << (int)value;
+            }
+
+            fclose(binvoxFile);
+            fclose(binvoxColorFile);
         }
-
-        if(count != 0) {
-            fwrite(&value, sizeof(unsigned char), 1, binvoxFile);
-            fwrite(&count, sizeof(unsigned char), 1, binvoxFile);
-
-            qDebug() << "write" << (int)count << (int)value;
-        }
-
-        fclose(binvoxFile);
     }
 
     cleanAll(mainList);
@@ -126,7 +152,7 @@ void loadDatas(int max, QList<QHash<int, int>*> *mainList, int &maxX, int &maxY,
 
                 p->x = fields[0].toInt() / STEPX;
                 p->y = fields[1].toInt() / STEPY;
-                p->coul = fields[2].toInt();
+                p->coul = fields[2];
 
                 list.append(p);
 
@@ -142,11 +168,11 @@ void loadDatas(int max, QList<QHash<int, int>*> *mainList, int &maxX, int &maxY,
         }
     }
 
-    plusX = abs(minX)+1;
-    plusY = abs(minY)+1;
+    plusX = abs(minX);
+    plusY = abs(minY);
 
-    maxX += plusX;
-    maxY += plusY;
+    maxX += plusX+1;
+    maxY += plusY+1;
     maxZ = MIN(max, tmpList.size());
 
     for(i=0;i<maxZ;i++) {
