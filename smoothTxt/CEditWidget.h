@@ -29,8 +29,9 @@ class CEditWidget : public QWidget {
         QList<QList<SPoint *>*> *map;
         int zeroX, zeroY;
         int mouseX, mouseY;
-        int selectedPoint, selectedList;
+        int selectedList;
         bool mousePressed;
+        QList<int> selectedPoints;
 
         QColor getColor(QString coul);
         void remplirLine(void);

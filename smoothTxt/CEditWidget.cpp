@@ -11,28 +11,33 @@ CEditWidget::CEditWidget(QWidget *parent) : QWidget(parent) {
     map = 0;
     setMouseTracking(true);
     mouseX = mouseY = 0;
-    selectedPoint = selectedList = -1;
+    selectedList = -1;
+    selectedPoints.clear();
     mousePressed = false;
 }
 //-----------------------------------------------------------------------------------------------
 void CEditWidget::setMap(QList<QList<SPoint *>*> *map) {
     this->map = map;
 
-    selectedPoint = selectedList = -1;
+    selectedList = -1;
+    selectedPoints.clear();
     mousePressed = false;
 
     repaint();
 }
 //-----------------------------------------------------------------------------------------------
 void CEditWidget::dropCurrentPoint(void) {
-    if(map != 0 && selectedList != -1 && selectedPoint != -1) {
-        map->at(selectedList)->removeAt(selectedPoint);
+    if(map != 0 && selectedList != -1 && selectedPoints.size() != 0) {
+        for(int i=0;i<selectedPoints.size();i++) {
+            map->at(selectedList)->removeAt(selectedPoints.at(i));
+        }
 
         if(map->at(selectedList)->size() == 0) {
             map->removeAt(selectedList);
         }
 
-        selectedPoint = selectedList = -1;
+        selectedList = -1;
+        selectedPoints.clear();
         mousePressed = false;
 
         repaint();
@@ -40,48 +45,48 @@ void CEditWidget::dropCurrentPoint(void) {
 }
 //-----------------------------------------------------------------------------------------------
 void CEditWidget::addPoint(void) {
-    if(map != 0 && selectedList != -1 && selectedPoint != -1) {
+    if(map != 0 && selectedList != -1 && selectedPoints.size() != 0) {
         SPoint *p = new SPoint;
 
         p->x = 0;
         p->y = 0;
         p->coul = '0';
 
-        map->at(selectedList)->insert(selectedPoint, p);
+        map->at(selectedList)->insert(selectedPoints.at(0), p);
 
         repaint();
     }
 }
 //-----------------------------------------------------------------------------------------------
 void CEditWidget::upPoint(void) {
-    if(map != 0 && selectedList != -1 && selectedPoint != -1) {
-        int ou = selectedPoint+1;
+    if(map != 0 && selectedList != -1 && selectedPoints.size() == 1) {
+        int ou = selectedPoints.at(0)+1;
         SPoint *p;
 
         if(ou == map->at(selectedList)->size()) {
             ou = 0;
         }
-        p = map->at(selectedList)->takeAt(selectedPoint);
+        p = map->at(selectedList)->takeAt(selectedPoints.at(0));
 
         map->at(selectedList)->insert(ou, p);
-        selectedPoint = ou;
+        selectedPoints[0] = ou;
 
         repaint();
     }
 }
 //-----------------------------------------------------------------------------------------------
 void CEditWidget::downPoint(void) {
-    if(map != 0 && selectedList != -1 && selectedPoint != -1) {
-        int ou = selectedPoint-1;
+    if(map != 0 && selectedList != -1 && selectedPoints.size() == 1) {
+        int ou = selectedPoints.at(0)-1;
         SPoint *p;
 
         if(ou == -1) {
             ou = map->at(selectedList)->size()-1;
         }
-        p = map->at(selectedList)->takeAt(selectedPoint);
+        p = map->at(selectedList)->takeAt(selectedPoints.at(0));
 
         map->at(selectedList)->insert(ou, p);
-        selectedPoint = ou;
+        selectedPoints[0] = ou;
 
         repaint();
     }
@@ -105,10 +110,12 @@ void CEditWidget::addGroupe(void) {
 }
 //-----------------------------------------------------------------------------------------------
 void CEditWidget::setColor(QString color) {
-    if(map != 0 && selectedList != -1 && selectedPoint != -1) {
-         map->at(selectedList)->at(selectedPoint)->coul = color;
+    if(map != 0 && selectedList != -1 && selectedPoints.size() != 0) {
+        for(int i=0;i<selectedPoints.size();i++) {
+            map->at(selectedList)->at(selectedPoints.at(i))->coul = color;
+        }
 
-         repaint();
+        repaint();
     }
 }
 //-----------------------------------------------------------------------------------------------
@@ -173,7 +180,7 @@ void CEditWidget::paintEvent(QPaintEvent * event) {
 
                 painter.drawLine(previous->x+zeroX, previous->y+zeroY, p->x+zeroX, p->y+zeroY);
 
-                if(i == selectedList && j == selectedPoint) {
+                if(i == selectedList && selectedPoints.contains(j)) {
                     painter.setPen(selectedPen);
                     painter.setBrush(Qt::NoBrush);
 
@@ -194,8 +201,8 @@ void CEditWidget::mouseMoveEvent(QMouseEvent * event) {
         mouseX = x;
         mouseY = y;
 
-        if(mousePressed && selectedList != -1 && selectedPoint != -1) {
-            SPoint *p = map->at(selectedList)->at(selectedPoint);
+        if(mousePressed && selectedList != -1 && selectedPoints.size() == 1) {
+            SPoint *p = map->at(selectedList)->at(selectedPoints.at(0));
 
             p->x = mouseX;
             p->y = mouseY;
@@ -214,10 +221,11 @@ void CEditWidget::resizeEvent(QResizeEvent * event) {
 //-----------------------------------------------------------------------------------------------
 void CEditWidget::mousePressEvent(QMouseEvent * event) {
 
-    if(map != 0) {
+    if(map != 0 && event->button() == Qt::LeftButton) {
         int i,j;
         int x = event->x() - zeroX;
         int y = event->y() - zeroY;
+        bool pointSelected = false;
 
 
         x += x < 0 ? -STEPX/2 : STEPX/2;
@@ -226,9 +234,6 @@ void CEditWidget::mousePressEvent(QMouseEvent * event) {
         x = (x/STEPX)*STEPX;
         y = (y/STEPX)*STEPX;
 
-        selectedList = -1;
-        selectedPoint = -1;
-
         for(i=0;i<map->size();i++) {
             QList<SPoint *> *list = map->at(i);
 
@@ -236,12 +241,30 @@ void CEditWidget::mousePressEvent(QMouseEvent * event) {
                 SPoint *p = list->at(j);
 
                 if(p->x == x && p->y == y) {
-                    selectedList = i;
-                    selectedPoint = j;
+                    if(event->modifiers() == Qt::ControlModifier) {
+                        if(selectedList == i) {
+                            selectedPoints.append(j);
+                        }else {
+                            selectedList = i;
+                            selectedPoints.clear();
+                            selectedPoints.append(j);
+                        }
+                    }else {
+                        selectedList = i;
+                        selectedPoints.clear();
+                        selectedPoints.append(j);
+                    }
+
+                    pointSelected = true;
 
                     break;
                 }
             }
+        }
+
+        if(!pointSelected) {
+            selectedList = -1;
+            selectedPoints.clear();
         }
 
         repaint();
