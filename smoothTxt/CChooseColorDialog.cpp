@@ -7,6 +7,9 @@ CChooseColorDialog::CChooseColorDialog(QWidget *parent) : QDialog(parent) {
     connect(lblRed, SIGNAL(doubleClicked(void)), this, SLOT(lblDoubleClicked(void)));
     connect(lblWhite, SIGNAL(doubleClicked(void)), this, SLOT(lblDoubleClicked(void)));
     connect(lblBlack, SIGNAL(doubleClicked(void)), this, SLOT(lblDoubleClicked(void)));
+    connect(lblBlue, SIGNAL(doubleClicked(void)), this, SLOT(lblDoubleClicked(void)));
+    connect(lblPink, SIGNAL(doubleClicked(void)), this, SLOT(lblDoubleClicked(void)));
+    connect(lblBrown, SIGNAL(doubleClicked(void)), this, SLOT(lblDoubleClicked(void)));
 }
 //-----------------------------------------------------------------------------------------------
 QString CChooseColorDialog::getColor(void) {

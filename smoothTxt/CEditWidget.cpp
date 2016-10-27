@@ -286,6 +286,18 @@ QColor CEditWidget::getColor(QString coul) {
         return Qt::red;
     }
 
+    if(coul == "1") {
+        return Qt::blue;
+    }
+
+    if(coul == "78") {
+        return QColor(246, 212, 179);
+    }
+
+    if(coul == "6") {
+        return QColor(88, 57, 39);
+    }
+
     return Qt::black;
 }
 //-----------------------------------------------------------------------------------------------
