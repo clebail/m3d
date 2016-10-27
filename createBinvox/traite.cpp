@@ -44,7 +44,7 @@ int main(int argc, char *argv[]) {
                     int key = y*maxX+x;
 
                     for(z=0;z<dim;z++) {
-                        if(z < mainList->size()) {
+                        if(x < maxX && y < maxY && z < mainList->size()) {
                             QHash<int ,int> *hash = mainList->at(z);
 
                             if(hash->contains(key)) {
