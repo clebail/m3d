@@ -32,6 +32,8 @@ class CMainWindow : public QMainWindow, private Ui::CMainWindow {
         void on_pbAddGroupe_clicked(bool checked = false);
         void on_pbColor_clicked(bool checked = false);
         void on_pbRemplir_clicked(bool checked = false);
+        void on_pbZapLigne_clicked(bool checked = false);
+        void on_pbAddLigne_clicked(bool checked = false);
 };
 //-----------------------------------------------------------------------------------------------
 #endif // __CMAINWINDOW_H__

@@ -128,6 +128,62 @@ void CEditWidget::remplir(void) {
     }
 }
 //-----------------------------------------------------------------------------------------------
+void CEditWidget::zapLigne(void) {
+    if(map != 0 && selectedList != -1 && selectedPoints.size() == 1) {
+        int i = selectedPoints.at(0);
+        QList<SPoint *> *list = map->at(selectedList);
+        int y = list->at(i)->y;
+        int j =0;
+
+        while(j<list->size()) {
+            if(list->at(j)->y == y) {
+                delete list->at(j);
+                list->removeAt(j);
+                continue;
+            }
+
+            j++;
+        }
+
+        for(j=0;j<list->size();j++) {
+            if(list->at(j)->y > y) {
+                list->at(j)->y-=STEPY;
+            }
+        }
+
+        repaint();
+    }
+}
+//-----------------------------------------------------------------------------------------------
+void CEditWidget::addLigne(void) {
+    if(map != 0 && selectedList != -1 && selectedPoints.size() == 1) {
+        int i = selectedPoints.at(0);
+        QList<SPoint *> *list = map->at(selectedList);
+        int y = list->at(i)->y;
+        int j =0;
+
+        for(j=0;j<list->size();j++) {
+            if(list->at(j)->y > y) {
+                list->at(j)->y+=STEPY;
+            }
+        }
+
+        for(j=0;j<list->size();j++) {
+            if(list->at(j)->y == y) {
+                SPoint *p = new SPoint;
+
+                p->x = list->at(j)->x;
+                p->y = y+STEPY;
+                p->coul = list->at(j)->coul;
+
+                list->append(p);
+            }
+        }
+
+        repaint();
+    }
+}
+//-----------------------------------------------------------------------------------------------
 void CEditWidget::paintEvent(QPaintEvent * event) {
     QPainter painter(this);
     QRect rect = event->rect().adjusted(0, 0, -1, -1);

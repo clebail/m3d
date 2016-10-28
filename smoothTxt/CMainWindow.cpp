@@ -210,3 +210,15 @@ void CMainWindow::on_pbRemplir_clicked(bool) {
     editWidget->remplir();
 }
 //-----------------------------------------------------------------------------------------------
+void CMainWindow::on_pbZapLigne_clicked(bool) {
+    if(QMessageBox::question(this, "Confirmation", "Etes vous sûre de vouloir supprimer cette ligne ?", QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes) {
+        editWidget->zapLigne();
+    }
+}
+//-----------------------------------------------------------------------------------------------
+void CMainWindow::on_pbAddLigne_clicked(bool) {
+    if(QMessageBox::question(this, "Confirmation", "Etes vous sûre de vouloir ajouter cette ligne ?", QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes) {
+        editWidget->addLigne();
+    }
+}
+//-----------------------------------------------------------------------------------------------

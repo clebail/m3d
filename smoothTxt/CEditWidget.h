@@ -19,6 +19,8 @@ class CEditWidget : public QWidget {
         void addGroupe(void);
         void setColor(QString color);
         void remplir(void);
+        void zapLigne(void);
+        void addLigne(void);
     protected:
         virtual void paintEvent(QPaintEvent * event);
         virtual void mouseMoveEvent(QMouseEvent * event);

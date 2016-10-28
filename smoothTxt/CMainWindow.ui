@@ -179,6 +179,20 @@
            </widget>
           </item>
           <item>
+           <widget class="QPushButton" name="pbAddLigne">
+            <property name="text">
+             <string>+ ligne</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="pbZapLigne">
+            <property name="text">
+             <string>- ligne</string>
+            </property>
+           </widget>
+          </item>
+          <item>
            <spacer name="horizontalSpacer_2">
             <property name="orientation">
              <enum>Qt::Horizontal</enum>
