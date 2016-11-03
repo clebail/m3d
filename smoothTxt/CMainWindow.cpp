@@ -3,6 +3,7 @@
 #include <QtDebug>
 #include <QStringList>
 #include <QMessageBox>
+#include <QKeyEvent>
 #include "CMainWindow.h"
 #include "CChooseColorDialog.h"
 //-----------------------------------------------------------------------------------------------
@@ -18,6 +19,20 @@ CMainWindow::~CMainWindow(void) {
     clearLayers();
 
     delete map;
+}
+//-----------------------------------------------------------------------------------------------
+bool CMainWindow::eventFilter(QObject *object, QEvent *event) {
+    if(event->type() == QEvent::KeyPress) {
+        QKeyEvent *keyEvent = static_cast<QKeyEvent *>(event);
+
+        if(keyEvent->key() == Qt::Key_Delete) {
+            on_pbDropPoint_clicked();
+
+            return true;
+        }
+    }
+
+    return QObject::eventFilter(object, event);
 }
 //-----------------------------------------------------------------------------------------------
 void CMainWindow::loadLayers(void) {

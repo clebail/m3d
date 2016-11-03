@@ -13,6 +13,7 @@ class CMainWindow : public QMainWindow, private Ui::CMainWindow {
     public:
         CMainWindow(QWidget *parent=0);
         ~CMainWindow(void);
+        virtual bool eventFilter(QObject *object, QEvent *event);
     private:
         QHash<QString, QList<QList<SPoint *>*>*> *map;
         void loadLayers(void);

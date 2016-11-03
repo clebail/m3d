@@ -28,16 +28,28 @@ void CEditWidget::setMap(QList<QList<SPoint *>*> *map) {
 //-----------------------------------------------------------------------------------------------
 void CEditWidget::dropCurrentPoint(void) {
     if(map != 0 && selectedList != -1 && selectedPoints.size() != 0) {
-        for(int i=0;i<selectedPoints.size();i++) {
+        int last;
+        int i;
+
+        for(i=0;i<selectedPoints.size();i++) {
             map->at(selectedList)->removeAt(selectedPoints.at(i));
         }
 
         if(map->at(selectedList)->size() == 0) {
             map->removeAt(selectedList);
+
+            selectedList = -1;
+            selectedPoints.clear();
+        }else {
+            last = selectedPoints.at(0)-1;
+            if(last == -1) {
+                last = map->at(selectedList)->size()-1;
+            }
+
+            selectedPoints.clear();
+            selectedPoints.append(last);
         }
 
-        selectedList = -1;
-        selectedPoints.clear();
         mousePressed = false;
 
         repaint();

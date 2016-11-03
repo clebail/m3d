@@ -17,6 +17,7 @@ int main(int argc, char *argv[]) {
     app.installTranslator(&translator);
 
     mainWindow = new CMainWindow();
+    mainWindow->installEventFilter(mainWindow);
     mainWindow->showMaximized();
 
     ret=app.exec();
