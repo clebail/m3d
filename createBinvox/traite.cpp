@@ -56,8 +56,6 @@ int main(int argc, char *argv[]) {
                                     if(count != 0) {
                                         fwrite(&value, sizeof(unsigned char), 1, binvoxFile);
                                         fwrite(&count, sizeof(unsigned char), 1, binvoxFile);
-
-                                        qDebug() << "write" << (int)count << (int)value;
                                     }
 
                                     count = 1;
@@ -70,8 +68,6 @@ int main(int argc, char *argv[]) {
                                     if(count != 0) {
                                         fwrite(&value, sizeof(unsigned char), 1, binvoxFile);
                                         fwrite(&count, sizeof(unsigned char), 1, binvoxFile);
-
-                                        qDebug() << "write" << (int)count << (int)value;
                                     }
 
                                     count = 1;
@@ -84,8 +80,6 @@ int main(int argc, char *argv[]) {
                                     fwrite(&value, sizeof(unsigned char), 1, binvoxFile);
                                     fwrite(&count, sizeof(unsigned char), 1, binvoxFile);
 
-                                    qDebug() << "write" << (int)count << (int)value;
-
                                     count = 0;
                                 }
                                 value = 0;
@@ -96,9 +90,7 @@ int main(int argc, char *argv[]) {
 
                         if(count == 255) {
                             fwrite(&value, sizeof(unsigned char), 1, binvoxFile);
-                            fwrite(&count, sizeof(unsigned char), 1, binvoxFile);
-
-                            qDebug() << "write" << (int)count << (int)value;
+                            fwrite(&count, sizeof(unsigned char), 1, binvoxFile);;
 
                             count = 0;
                         }
@@ -109,8 +101,6 @@ int main(int argc, char *argv[]) {
             if(count != 0) {
                 fwrite(&value, sizeof(unsigned char), 1, binvoxFile);
                 fwrite(&count, sizeof(unsigned char), 1, binvoxFile);
-
-                qDebug() << "write" << (int)count << (int)value;
             }
 
             fclose(binvoxFile);
