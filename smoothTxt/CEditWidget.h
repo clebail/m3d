@@ -21,6 +21,10 @@ class CEditWidget : public QWidget {
         void remplir(void);
         void zapLigne(void);
         void addLigne(void);
+        void plusX(void);
+        void moinsX(void);
+        void plusY(void);
+        void moinsY(void);
     protected:
         virtual void paintEvent(QPaintEvent * event);
         virtual void mouseMoveEvent(QMouseEvent * event);

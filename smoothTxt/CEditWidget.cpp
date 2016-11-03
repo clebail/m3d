@@ -184,6 +184,58 @@ void CEditWidget::addLigne(void) {
     }
 }
 //-----------------------------------------------------------------------------------------------
+void CEditWidget::plusX(void) {
+    if(map != 0 && selectedList != -1) {
+        QList<SPoint *> *list = map->at(selectedList);
+        int i;
+
+        for(i=0;i<list->size();i++) {
+            list->at(i)->x+=STEPX;
+        }
+
+        repaint();
+    }
+}
+//-----------------------------------------------------------------------------------------------
+void CEditWidget::moinsX(void) {
+    if(map != 0 && selectedList != -1) {
+        QList<SPoint *> *list = map->at(selectedList);
+        int i;
+
+        for(i=0;i<list->size();i++) {
+            list->at(i)->x-=STEPX;
+        }
+
+        repaint();
+    }
+}
+//-----------------------------------------------------------------------------------------------
+void CEditWidget::plusY(void) {
+    if(map != 0 && selectedList != -1) {
+        QList<SPoint *> *list = map->at(selectedList);
+        int i;
+
+        for(i=0;i<list->size();i++) {
+            list->at(i)->y+=STEPY;
+        }
+
+        repaint();
+    }
+}
+//-----------------------------------------------------------------------------------------------
+void CEditWidget::moinsY(void) {
+    if(map != 0 && selectedList != -1) {
+        QList<SPoint *> *list = map->at(selectedList);
+        int i;
+
+        for(i=0;i<list->size();i++) {
+            list->at(i)->y-=STEPY;
+        }
+
+        repaint();
+    }
+}
+//-----------------------------------------------------------------------------------------------
 void CEditWidget::paintEvent(QPaintEvent * event) {
     QPainter painter(this);
     QRect rect = event->rect().adjusted(0, 0, -1, -1);

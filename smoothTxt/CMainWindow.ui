@@ -193,6 +193,34 @@
            </widget>
           </item>
           <item>
+           <widget class="QPushButton" name="pbPlusX">
+            <property name="text">
+             <string>+ X</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="pbMoinsX">
+            <property name="text">
+             <string>- X</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="pbPlusY">
+            <property name="text">
+             <string>+ Y</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="pbMoinsY">
+            <property name="text">
+             <string>- Y</string>
+            </property>
+           </widget>
+          </item>
+          <item>
            <spacer name="horizontalSpacer_2">
             <property name="orientation">
              <enum>Qt::Horizontal</enum>
