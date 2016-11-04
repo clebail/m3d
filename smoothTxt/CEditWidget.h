@@ -23,6 +23,7 @@ class CEditWidget : public QWidget {
         void moinsX(void);
         void plusY(void);
         void moinsY(void);
+        void simplify(void);
     protected:
         virtual void paintEvent(QPaintEvent * event);
         virtual void mouseMoveEvent(QMouseEvent * event);
@@ -41,10 +42,13 @@ class CEditWidget : public QWidget {
         void remplirLine(void);
         void remplirPoint(QList<SPoint *> *list, int idxP1, int idxP2);
         void remplirSurface(void);
-        bool inList(SPoint *p);
+        bool inList(SPoint *p, int *pos);
         bool inSurface(SPoint *p);
         int testPoint(SPoint *p, SPoint *pv, SPoint *pv1);
         void remplir(SPoint *p);
+        int getFirstContourPoint(void);
+        bool isContour(SPoint *p);
+        int getNextInContour(SPoint *p);
     signals:
         void mouseMove(int x, int y);
 };

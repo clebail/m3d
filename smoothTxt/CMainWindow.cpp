@@ -253,3 +253,7 @@ void CMainWindow::on_pbMoinsY_clicked(bool) {
     editWidget->moinsY();
 }
 //-----------------------------------------------------------------------------------------------
+void CMainWindow::on_pbSimple_clicked(bool) {
+    editWidget->simplify();
+}
+//-----------------------------------------------------------------------------------------------

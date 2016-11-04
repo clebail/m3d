@@ -62,10 +62,11 @@ void CEditWidget::addPoint(void) {
         SPoint *p = map->at(selectedList)->at(selectedPoints.at(0));
         SPoint *nP = new SPoint;
         int depY = ((STEPY-zeroY)/STEPY)*STEPY;
+        int nPIdx;
 
         nP->x = ((STEPX-zeroX)/STEPX)*STEPX;
         nP->y = depY;
-        while(inList(nP)) {
+        while(inList(nP, &nPIdx)) {
             nP->y+=STEPY;
             if(nP->y >= size().height() - zeroY) {
                 nP->y = depY;
@@ -221,6 +222,29 @@ void CEditWidget::moinsY(void) {
         }
 
         repaint();
+    }
+}
+//-----------------------------------------------------------------------------------------------
+void CEditWidget::simplify(void) {
+    if(map != 0 && selectedList != -1) {
+        int pos = getFirstContourPoint();
+        if(pos != -1) {
+            QList<int> contour;
+            int next;
+
+            contour << pos;
+
+            next = getNextInContour(map->at(selectedList)->at(pos));
+            while(next != pos && next != -1) {
+                contour << next;
+                next = getNextInContour(map->at(selectedList)->at(next));
+            }
+
+            selectedPoints.clear();
+            selectedPoints << contour;
+
+            repaint();
+        }
     }
 }
 //-----------------------------------------------------------------------------------------------
@@ -431,12 +455,13 @@ void CEditWidget::remplirSurface(void) {
     QList<SPoint *> *list = map->at(selectedList);
     SPoint *p = list->last();
     SPoint *newP = new SPoint;
+    int newPIdx;
 
     newP->coul = p->coul;
 
     newP->x = p->x+STEPX;
     newP->y = p->y;
-    if(!inList(newP) && inSurface(newP)) {
+    if(!inList(newP, &newPIdx) && inSurface(newP)) {
         list->append(newP);
         remplir(newP);
 
@@ -445,7 +470,7 @@ void CEditWidget::remplirSurface(void) {
 
     newP->x = p->x-STEPX;
     newP->y = p->y;
-    if(!inList(newP) && inSurface(newP)) {
+    if(!inList(newP, &newPIdx) && inSurface(newP)) {
         list->append(newP);
         remplir(newP);
 
@@ -454,7 +479,7 @@ void CEditWidget::remplirSurface(void) {
 
     newP->x = p->x;
     newP->y = p->y+STEPY;
-    if(!inList(newP) && inSurface(newP)) {
+    if(!inList(newP, &newPIdx) && inSurface(newP)) {
         list->append(newP);
         remplir(newP);
 
@@ -463,7 +488,7 @@ void CEditWidget::remplirSurface(void) {
 
     newP->x = p->x;
     newP->y = p->y-STEPY;
-    if(!inList(newP) && inSurface(newP)) {
+    if(!inList(newP, &newPIdx) && inSurface(newP)) {
         list->append(newP);
         remplir(newP);
 
@@ -473,7 +498,7 @@ void CEditWidget::remplirSurface(void) {
     delete newP;
 }
 //-----------------------------------------------------------------------------------------------
-bool CEditWidget::inList(SPoint *p) {
+bool CEditWidget::inList(SPoint *p, int *pos) {
     QList<SPoint *> *list = map->at(selectedList);
     int i;
 
@@ -481,6 +506,7 @@ bool CEditWidget::inList(SPoint *p) {
         SPoint *pv = list->at(i);
 
         if(pv->x == p->x && pv->y == p->y) {
+            *pos = i;
             return true;
         }
     }
@@ -518,12 +544,13 @@ int CEditWidget::testPoint(SPoint *p, SPoint *pv, SPoint *pv1) {
 void CEditWidget::remplir(SPoint *p) {
     QList<SPoint *> *list = map->at(selectedList);
     SPoint *newP = 0;
+    int newPIdx;
 
     newP = new SPoint;
     newP->coul = p->coul;
     newP->x = p->x+STEPX;
     newP->y = p->y;
-    if(!inList(newP)) {
+    if(!inList(newP, &newPIdx)) {
         list->append(newP);
 
         remplir(newP);
@@ -533,7 +560,7 @@ void CEditWidget::remplir(SPoint *p) {
     newP->coul = p->coul;
     newP->x = p->x-STEPX;
     newP->y = p->y;
-    if(!inList(newP)) {
+    if(!inList(newP, &newPIdx)) {
         list->append(newP);
 
         remplir(newP);
@@ -544,7 +571,7 @@ void CEditWidget::remplir(SPoint *p) {
     newP->coul = p->coul;
     newP->x = p->x;
     newP->y = p->y+STEPY;
-    if(!inList(newP)) {
+    if(!inList(newP, &newPIdx)) {
         list->append(newP);
 
         remplir(newP);
@@ -554,7 +581,7 @@ void CEditWidget::remplir(SPoint *p) {
     newP->coul = p->coul;
     newP->x = p->x;
     newP->y = p->y-STEPY;
-    if(!inList(newP)) {
+    if(!inList(newP, &newPIdx)) {
         list->append(newP);
 
         remplir(newP);
@@ -563,5 +590,51 @@ void CEditWidget::remplir(SPoint *p) {
     }
 
     delete newP;
+}
+//-----------------------------------------------------------------------------------------------
+int CEditWidget::getFirstContourPoint(void) {
+    int i = -1;
+    SPoint *p;
+
+    do {
+        p = map->at(selectedList)->at(++i);
+    }while(!isContour(p));
+
+    return i;
+}
+//-----------------------------------------------------------------------------------------------
+bool CEditWidget::isContour(SPoint *p) {
+    int nb=0;
+    SPoint tP;
+    int tPIdx;
+
+    for(tP.y=p->y-STEPY;tP.y<=p->y+STEPY;tP.y+=STEPY) {
+        for(tP.x=p->x-STEPX;tP.x<=p->x+STEPX;tP.x+=STEPX) {
+            if(tP.x != p->x && tP.y != p->y) {
+               if(!inList(&tP, &tPIdx)) {
+                   nb++;
+               }
+            }
+        }
+    }
+
+    return nb >= 2;
+}
+//-----------------------------------------------------------------------------------------------
+int CEditWidget::getNextInContour(SPoint *p) {
+    SPoint tP;
+    int pos;
+
+    for(tP.y=p->y-STEPY;tP.y<=p->y+STEPY;tP.y+=STEPY) {
+        for(tP.x=p->x-STEPX;tP.x<=p->x+STEPX;tP.x+=STEPX) {
+            if(tP.x != p->x && tP.y != p->y) {
+               if(inList(&tP, &pos) && isContour(&tP)) {
+                    return pos;
+               }
+            }
+        }
+    }
+
+    return -1;
 }
 //-----------------------------------------------------------------------------------------------
