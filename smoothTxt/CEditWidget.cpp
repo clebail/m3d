@@ -31,7 +31,8 @@ void CEditWidget::dropCurrentPoint(void) {
         int last;
         int i;
 
-        for(i=0;i<selectedPoints.size();i++) {
+        qSort(selectedPoints.begin(), selectedPoints.end());
+        for(i=selectedPoints.size()-1;i>=0;i--) {
             map->at(selectedList)->removeAt(selectedPoints.at(i));
         }
 
@@ -58,47 +59,22 @@ void CEditWidget::dropCurrentPoint(void) {
 //-----------------------------------------------------------------------------------------------
 void CEditWidget::addPoint(void) {
     if(map != 0 && selectedList != -1 && selectedPoints.size() != 0) {
-        SPoint *p = new SPoint;
+        SPoint *p = map->at(selectedList)->at(selectedPoints.at(0));
+        SPoint *nP = new SPoint;
+        int depY = ((STEPY-zeroY)/STEPY)*STEPY;
 
-        p->x = 0;
-        p->y = 0;
-        p->coul = '0';
-
-        map->at(selectedList)->insert(selectedPoints.at(0), p);
-
-        repaint();
-    }
-}
-//-----------------------------------------------------------------------------------------------
-void CEditWidget::upPoint(void) {
-    if(map != 0 && selectedList != -1 && selectedPoints.size() == 1) {
-        int ou = selectedPoints.at(0)+1;
-        SPoint *p;
-
-        if(ou == map->at(selectedList)->size()) {
-            ou = 0;
+        nP->x = ((STEPX-zeroX)/STEPX)*STEPX;
+        nP->y = depY;
+        while(inList(nP)) {
+            nP->y+=STEPY;
+            if(nP->y >= size().height() - zeroY) {
+                nP->y = depY;
+                nP->x+=STEPX;
+            }
         }
-        p = map->at(selectedList)->takeAt(selectedPoints.at(0));
+        nP->coul = p->coul;
 
-        map->at(selectedList)->insert(ou, p);
-        selectedPoints[0] = ou;
-
-        repaint();
-    }
-}
-//-----------------------------------------------------------------------------------------------
-void CEditWidget::downPoint(void) {
-    if(map != 0 && selectedList != -1 && selectedPoints.size() == 1) {
-        int ou = selectedPoints.at(0)-1;
-        SPoint *p;
-
-        if(ou == -1) {
-            ou = map->at(selectedList)->size()-1;
-        }
-        p = map->at(selectedList)->takeAt(selectedPoints.at(0));
-
-        map->at(selectedList)->insert(ou, p);
-        selectedPoints[0] = ou;
+        map->at(selectedList)->insert(selectedPoints.at(0), nP);
 
         repaint();
     }

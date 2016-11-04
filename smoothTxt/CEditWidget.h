@@ -14,8 +14,6 @@ class CEditWidget : public QWidget {
         void setMap(QList<QList<SPoint *>*> *map);
         void dropCurrentPoint(void);
         void addPoint(void);
-        void upPoint(void);
-        void downPoint(void);
         void addGroupe(void);
         void setColor(QString color);
         void remplir(void);
