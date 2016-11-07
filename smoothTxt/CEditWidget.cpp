@@ -227,19 +227,17 @@ void CEditWidget::moinsY(void) {
 //-----------------------------------------------------------------------------------------------
 void CEditWidget::simplify(void) {
     if(map != 0 && selectedList != -1) {
-        int pos = getFirstContourPoint();
-        if(pos != -1) {
-            QList<int> contour;
-            int next;
+        QList<SPoint *> *list = map->at(selectedList);
+        QList<int> contour;
+        int i;
 
-            contour << pos;
-
-            next = getNextInContour(map->at(selectedList)->at(pos));
-            while(next != pos && next != -1) {
-                contour << next;
-                next = getNextInContour(map->at(selectedList)->at(next));
+        for(i=0;i<list->size();i++) {
+            if(isContour(list->at(i))) {
+                contour << i;
             }
+        }
 
+        if(contour.size() != 0) {
             selectedPoints.clear();
             selectedPoints << contour;
 
@@ -592,17 +590,6 @@ void CEditWidget::remplir(SPoint *p) {
     delete newP;
 }
 //-----------------------------------------------------------------------------------------------
-int CEditWidget::getFirstContourPoint(void) {
-    int i = -1;
-    SPoint *p;
-
-    do {
-        p = map->at(selectedList)->at(++i);
-    }while(!isContour(p));
-
-    return i;
-}
-//-----------------------------------------------------------------------------------------------
 bool CEditWidget::isContour(SPoint *p) {
     int nb=0;
     SPoint tP;
@@ -619,22 +606,5 @@ bool CEditWidget::isContour(SPoint *p) {
     }
 
     return nb >= 2;
-}
-//-----------------------------------------------------------------------------------------------
-int CEditWidget::getNextInContour(SPoint *p) {
-    SPoint tP;
-    int pos;
-
-    for(tP.y=p->y-STEPY;tP.y<=p->y+STEPY;tP.y+=STEPY) {
-        for(tP.x=p->x-STEPX;tP.x<=p->x+STEPX;tP.x+=STEPX) {
-            if(tP.x != p->x && tP.y != p->y) {
-               if(inList(&tP, &pos) && isContour(&tP)) {
-                    return pos;
-               }
-            }
-        }
-    }
-
-    return -1;
 }
 //-----------------------------------------------------------------------------------------------

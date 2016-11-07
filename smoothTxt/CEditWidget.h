@@ -46,9 +46,7 @@ class CEditWidget : public QWidget {
         bool inSurface(SPoint *p);
         int testPoint(SPoint *p, SPoint *pv, SPoint *pv1);
         void remplir(SPoint *p);
-        int getFirstContourPoint(void);
         bool isContour(SPoint *p);
-        int getNextInContour(SPoint *p);
     signals:
         void mouseMove(int x, int y);
 };
