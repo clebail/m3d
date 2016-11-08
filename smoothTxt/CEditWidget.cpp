@@ -243,6 +243,20 @@ void CEditWidget::simplify(void) {
         QList<SPoint *> others;
         int i;
 
+        qSort(list->begin(), list->end(), SInsideLess());
+
+        i=1;
+        while(i != list->size()) {
+            SPoint *p1=list->at(i-1), *p2 = list->at(i);
+
+            if(*p1 == *p2) {
+                delete p2;
+                list->removeAt(i);
+            } else {
+                i++;
+            }
+        }
+
         for(i=0;i<list->size();i++) {
             if(isContour(list->at(i))) {
                 contour << list->at(i);
