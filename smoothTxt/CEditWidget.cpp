@@ -263,6 +263,9 @@ void CEditWidget::simplify(void) {
 
         list->append(others);
 
+        selectedList = -1;
+        selectedPoints.clear();
+
         repaint();
     }
 }
