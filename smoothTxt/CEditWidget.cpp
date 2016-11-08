@@ -6,6 +6,17 @@
 #include <QResizeEvent>
 #include <common.h>
 #include "CEditWidget.h"
+#include "CContourLess.h"
+//-----------------------------------------------------------------------------------------------
+struct SInsideLess {
+    bool operator()(struct _SPoint *a, struct _SPoint *b) const {
+        if(a->y == b->y) {
+            return a->x < b->x;
+        }
+
+        return a->y < b->y;
+    }
+};
 //-----------------------------------------------------------------------------------------------
 CEditWidget::CEditWidget(QWidget *parent) : QWidget(parent) {
     map = 0;
@@ -228,21 +239,31 @@ void CEditWidget::moinsY(void) {
 void CEditWidget::simplify(void) {
     if(map != 0 && selectedList != -1) {
         QList<SPoint *> *list = map->at(selectedList);
-        QList<int> contour;
+        QList<SPoint *> contour;
+        QList<SPoint *> others;
         int i;
 
         for(i=0;i<list->size();i++) {
             if(isContour(list->at(i))) {
-                contour << i;
+                contour << list->at(i);
+            }else {
+                others << list->at(i);
             }
         }
 
-        if(contour.size() != 0) {
-            selectedPoints.clear();
-            selectedPoints << contour;
+        list->clear();
 
-            repaint();
+        qSort(others.begin(), others.end(), SInsideLess());
+
+        if(contour.size() != 0) {
+            qSort(contour.begin(), contour.end(), CContourLess());
+
+            list->append(contour);
         }
+
+        list->append(others);
+
+        repaint();
     }
 }
 //-----------------------------------------------------------------------------------------------
@@ -503,7 +524,7 @@ bool CEditWidget::inList(SPoint *p, int *pos) {
     for(i=0;i<list->size();i++) {
         SPoint *pv = list->at(i);
 
-        if(pv->x == p->x && pv->y == p->y) {
+        if(*pv == *p) {
             *pos = i;
             return true;
         }
@@ -591,20 +612,33 @@ void CEditWidget::remplir(SPoint *p) {
 }
 //-----------------------------------------------------------------------------------------------
 bool CEditWidget::isContour(SPoint *p) {
-    int nb=0;
     SPoint tP;
     int tPIdx;
 
-    for(tP.y=p->y-STEPY;tP.y<=p->y+STEPY;tP.y+=STEPY) {
-        for(tP.x=p->x-STEPX;tP.x<=p->x+STEPX;tP.x+=STEPX) {
-            if(tP.x != p->x && tP.y != p->y) {
-               if(!inList(&tP, &tPIdx)) {
-                   nb++;
-               }
-            }
-        }
+    tP.x = p->x;
+    tP.y = p->y - STEPY;
+    if(!inList(&tP, &tPIdx)) {
+        return true;
     }
 
-    return nb >= 2;
+    tP.x = p->x + STEPX;
+    tP.y = p->y;
+    if(!inList(&tP, &tPIdx)) {
+        return true;
+    }
+
+    tP.x = p->x;
+    tP.y = p->y + STEPY;
+    if(!inList(&tP, &tPIdx)) {
+        return true;
+    }
+
+    tP.x = p->x - STEPX;
+    tP.y = p->y;
+    if(!inList(&tP, &tPIdx)) {
+        return true;
+    }
+
+    return false;
 }
 //-----------------------------------------------------------------------------------------------

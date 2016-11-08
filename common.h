@@ -2,6 +2,8 @@
 #define __COMMON_H__
 
 #include <QString>
+#include <QtDebug>
+#include <math.h>
 
 #define NB_IMAGE			72
 #define IMAGE_WIDTH			1200
@@ -23,5 +25,10 @@
 typedef struct _SPoint {
 	int x,y;
     QString coul;
+
+    bool operator==(struct _SPoint const& other) {
+        return x == other.x && y == other.y;
+    }
 }SPoint;
+
 #endif //__COMMON_H__

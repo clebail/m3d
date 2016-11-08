@@ -12,7 +12,8 @@ SOURCES += main.cpp \
 	CMainWindow.cpp \
     CEditWidget.cpp \
     CChooseColorDialog.cpp \
-    CColorLabel.cpp
+    CColorLabel.cpp \
+    CContourLess.cpp
 
 FORMS += \
     CMainWindow.ui \
@@ -23,4 +24,5 @@ HEADERS += \
 	../common.h \
     CEditWidget.h \
     CChooseColorDialog.h \
-    CColorLabel.h
+    CColorLabel.h \
+    CContourLess.h
