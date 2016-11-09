@@ -454,6 +454,10 @@ QColor CEditWidget::getColor(QString coul) {
         return QColor(88, 42, 18);
     }
 
+    if(coul == "14") {
+        return Qt::yellow;
+    }
+
     return Qt::black;
 }
 //-----------------------------------------------------------------------------------------------

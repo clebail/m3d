@@ -50,7 +50,7 @@ color: black;</string>
         </property>
        </widget>
       </item>
-      <item row="0" column="3">
+      <item row="0" column="4">
        <spacer name="horizontalSpacer">
         <property name="orientation">
          <enum>Qt::Horizontal</enum>
@@ -225,6 +225,36 @@ color: #582A12;</string>
         </property>
         <property name="text">
          <string>70</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="3">
+       <widget class="CColorLabel" name="lblYellow">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>24</width>
+          <height>10</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>24</width>
+          <height>24</height>
+         </size>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">border: 1px solid black;
+background-color: yellow;
+color: yellow;</string>
+        </property>
+        <property name="text">
+         <string>14</string>
         </property>
        </widget>
       </item>
