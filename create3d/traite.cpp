@@ -238,6 +238,8 @@ void setColor(QString codeCoul) {
         glColor3ub(246, 212, 179);
     }else if(codeCoul == "70") {
         glColor3ub(88, 42, 18);
+    }else if(codeCoul == "14") {
+        glColor3ub(255, 255, 0);
     }else {
         glColor3ub(0, 0, 0);
     }
