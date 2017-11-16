@@ -25,11 +25,15 @@ int main(void) {
 					QStringList fields = line.split(";");
 					QString ldrLine = "1 %1 %2 %3 %4 1 0 0 0 1 0 0 0 1 3005.DAT\n";
 					
-					ldrStream << ldrLine.arg(fields[2]).arg(fields[0]).arg(-(NB_PAS-i)*24).arg(fields[1]);
+					int x = fields[0].toInt() / STEPX * 20;
+					int z = fields[1].toInt() / STEPZ * 20;
+					
+					ldrStream << ldrLine.arg(fields[2]).arg(QString::number(x)).arg(-(NB_PAS-i)*24).arg(QString::number(z));
 				}
 
 				txtFile.close();
 			}
+			//break;
 		}
 		
 		ldrFile.close();
