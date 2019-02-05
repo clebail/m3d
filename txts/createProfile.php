@@ -2,15 +2,12 @@
 
 $img = imagecreatetruecolor(1024, 78*15);
 
-$cols[0] = imagecolorallocate($img, 0, 0, 0);
-$cols[1] = imagecolorallocate($img, 0, 0, 255);
-$cols[4] = imagecolorallocate($img, 255, 0, 0);
-$cols[14] = imagecolorallocate($img, 255, 255, 0);
-$cols[15] = imagecolorallocate($img, 255, 255, 255);
-$cols[70] = imagecolorallocate($img, 0x58, 0x2A, 0x12);
-$cols[78] = imagecolorallocate($img, 0xF6, 0xD7, 0xB3);
+$blanc = imagecolorallocate($img, 255, 255, 255);
+$bleu = imagecolorallocate($img, 0, 0, 255);
 
-imagefill($img, 1, 1, $cols[15]);
+imagecolortransparent($img, $blanc);
+
+imagefill($img, 1, 1, $blanc);
 
 for($i=1;$i<=78;$i++) {
 	$fileName = str_pad($i, 4, "0", STR_PAD_LEFT).".txt";
@@ -32,8 +29,8 @@ for($i=1;$i<=78;$i++) {
 		}
 		
 		foreach($datas as $x => $couleur) {
-			imagerectangle($img, $x+512, ($i-1)*15, $x+512+15, $i*15, $cols[$couleur]);
-			imagefill($img, $x+513, ($i-1)*15 +1, $cols[$couleur]);
+			imagerectangle($img, $x+512, ($i-1)*15, $x+512+15, $i*15, $bleu);
+			//imagefill($img, $x+513, ($i-1)*15 +1, $fond);
 		}
 
 		fclose($handle);
