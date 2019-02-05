@@ -15,20 +15,17 @@ for($i=1;$i<=78;$i++) {
 	$handle = fopen($fileName, "r");
 	if ($handle) {
 		$maxx = array();
-		$datas = array();
 		while (($line = fgets($handle)) !== false) {
 			$items = explode(";", $line);
 			$x = $items[0];
 			$y = $items[1];
-			$couleur = $items[2];
 			
 			if(!array_key_exists($y, $maxx) || $maxx[$y] < $x) {
 				$maxx[$y] = $x;
-				$datas[$y] = $couleur;
 			}
 		}
 		
-		foreach($datas as $x => $couleur) {
+		foreach($maxx as $x => $y) {
 			imagerectangle($img, $x+512, ($i-1)*15, $x+512+15, $i*15, $bleu);
 			//imagefill($img, $x+513, ($i-1)*15 +1, $fond);
 		}
