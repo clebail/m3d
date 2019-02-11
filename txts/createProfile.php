@@ -9,8 +9,10 @@ imagecolortransparent($img, $blanc);
 
 imagefill($img, 1, 1, $blanc);
 
-for($i=1;$i<=78;$i++) {
-	$fileName = str_pad($i, 4, "0", STR_PAD_LEFT).".txt";
+for($i=1;$i<=intval($_SERVER["argv"][2]);$i++) {
+	$fileName = $_SERVER["argv"][1]."/".str_pad($i, 4, "0", STR_PAD_LEFT).".txt";
+
+	echo "Traite {$fileName}\n";
 	
 	$handle = fopen($fileName, "r");
 	if ($handle) {
@@ -34,5 +36,5 @@ for($i=1;$i<=78;$i++) {
 	} 
 }
 
-imagepng($img, "test.png");
+imagepng($img, $_SERVER["argv"][1].".png");
 imagedestroy($img);
