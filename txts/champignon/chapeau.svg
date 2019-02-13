@@ -1,4 +1,3 @@
-<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="100cm" height="160cm" viewBox="0 0 100 160">
-	<path fill="none" stroke="#000" stroke-width="1" d="M 10 143 H 61 A 80 70 0 0 0 10 20" />
-</svg>
- 
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width='70cm' height='100cm' viewBox="0 0 70 100" >
+	<path id="arc1" fill="none" stroke="#000" d="M 10 90 A 50 30 0 0 0 60 60 A 50 50 0 0 0 10 10"></path>
+</svg> 
