@@ -19,16 +19,19 @@ struct SInsideLess {
 };
 //-----------------------------------------------------------------------------------------------
 CEditWidget::CEditWidget(QWidget *parent) : QWidget(parent) {
-    map = 0;
+    map = mapDessous = mapDessus = 0;
     setMouseTracking(true);
     mouseX = mouseY = 0;
     selectedList = -1;
     selectedPoints.clear();
     mousePressed = false;
+    showDessous = showDessus = false;
 }
 //-----------------------------------------------------------------------------------------------
-void CEditWidget::setMap(QList<QList<SPoint *>*> *map) {
+void CEditWidget::setMaps(QList<QList<SPoint *>*> *map, QList<QList<SPoint *>*> *mDessous, QList<QList<SPoint *>*> *mDessus) {
     this->map = map;
+    this->mapDessous = mDessous;
+    this->mapDessus = mDessus;
 
     selectedList = -1;
     selectedPoints.clear();
@@ -284,11 +287,20 @@ void CEditWidget::simplify(void) {
     }
 }
 //-----------------------------------------------------------------------------------------------
+void CEditWidget::setShowDessous(bool show) {
+    showDessous = show;
+    repaint();
+}
+//-----------------------------------------------------------------------------------------------
+void CEditWidget::setShowDessus(bool show) {
+    showDessus = show;
+    repaint();
+}
+//-----------------------------------------------------------------------------------------------
 void CEditWidget::paintEvent(QPaintEvent * event) {
     QPainter painter(this);
     QRect rect = event->rect().adjusted(0, 0, -1, -1);
     QPen linePen(Qt::black);
-    QPen selectedPen(Qt::black);
     int x, y;
 
     linePen.setStyle(Qt::DotLine);
@@ -316,36 +328,14 @@ void CEditWidget::paintEvent(QPaintEvent * event) {
         painter.drawLine(x, 1, x, rect.height()-1);
     }
 
-    if(map != 0) {
-        int i,j;
+    if(showDessous) {
+        draw(mapDessous, false, &painter);
+    }
 
+    draw(map, true, &painter);
 
-
-        for(i=0;i<map->size();i++) {
-            QList<SPoint *> *list = map->at(i);
-            SPoint *previous = list->at(list->size()-1);
-
-            for(j=0;j<list->size();j++) {
-                SPoint *p = list->at(j);
-                QColor color = getColor(p->coul);
-
-                painter.setPen(Qt::black);
-                painter.setBrush(color);
-
-                painter.drawEllipse(p->x+zeroX-STEPX/4, p->y+zeroY-STEPY/4, STEPX/2, STEPY/2);
-
-                painter.drawLine(previous->x+zeroX, previous->y+zeroY, p->x+zeroX, p->y+zeroY);
-
-                if(i == selectedList && selectedPoints.contains(j)) {
-                    painter.setPen(selectedPen);
-                    painter.setBrush(Qt::NoBrush);
-
-                    painter.drawEllipse(p->x+zeroX-STEPX/2, p->y+zeroY-STEPY/2, STEPX, STEPY);
-                }
-
-                previous = p;
-            }
-        }
+    if(showDessus) {
+        draw(mapDessus, false, &painter);
     }
 }
 //-----------------------------------------------------------------------------------------------
@@ -433,32 +423,28 @@ void CEditWidget::mouseReleaseEvent(QMouseEvent *) {
     mousePressed = false;
 }
 //-----------------------------------------------------------------------------------------------
-QColor CEditWidget::getColor(QString coul) {
+QColor CEditWidget::getColor(QString coul, bool real) {
+    QColor result = Qt::black;
+
     if(coul == "15") {
-        return Qt::white;
+        result = Qt::white;
+    } else if(coul == "4") {
+        result = Qt::red;
+    } else if(coul == "1") {
+        result = Qt::blue;
+    } else if(coul == "78") {
+        result = QColor(246, 212, 179);
+    } else if(coul == "70") {
+        result = QColor(88, 42, 18);
+    } else if(coul == "14") {
+        result = Qt::yellow;
     }
 
-    if(coul == "4") {
-        return Qt::red;
+    if(!real) {
+        result.setAlpha(32);
     }
 
-    if(coul == "1") {
-        return Qt::blue;
-    }
-
-    if(coul == "78") {
-        return QColor(246, 212, 179);
-    }
-
-    if(coul == "70") {
-        return QColor(88, 42, 18);
-    }
-
-    if(coul == "14") {
-        return Qt::yellow;
-    }
-
-    return Qt::black;
+    return result;
 }
 //-----------------------------------------------------------------------------------------------
 void CEditWidget::remplirLine(void) {
@@ -661,5 +647,38 @@ bool CEditWidget::isContour(SPoint *p) {
     }
 
     return false;
+}
+//-----------------------------------------------------------------------------------------------
+void CEditWidget::draw(QList<QList<SPoint *>*> *map, bool real, QPainter *painter) {
+    if(map != 0) {
+        int i,j;
+        QPen selectedPen(Qt::black);
+
+        for(i=0;i<map->size();i++) {
+            QList<SPoint *> *list = map->at(i);
+            //SPoint *previous = list->at(list->size()-1);
+
+            for(j=0;j<list->size();j++) {
+                SPoint *p = list->at(j);
+                QColor color = getColor(p->coul, real);
+
+                painter->setPen(Qt::black);
+                painter->setBrush(color);
+
+                painter->drawEllipse(p->x+zeroX-STEPX/4, p->y+zeroY-STEPY/4, STEPX/2, STEPY/2);
+
+                //painter->drawLine(previous->x+zeroX, previous->y+zeroY, p->x+zeroX, p->y+zeroY);
+
+                if(i == selectedList && selectedPoints.contains(j)) {
+                    painter->setPen(selectedPen);
+                    painter->setBrush(Qt::NoBrush);
+
+                    painter->drawEllipse(p->x+zeroX-STEPX/2, p->y+zeroY-STEPY/2, STEPX, STEPY);
+                }
+
+                //previous = p;
+            }
+        }
+    }
 }
 //-----------------------------------------------------------------------------------------------

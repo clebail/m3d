@@ -40,6 +40,8 @@ class CMainWindow : public QMainWindow, private Ui::CMainWindow {
         void on_pbPlusY_clicked(bool checked = false);
         void on_pbMoinsY_clicked(bool checked = false);
         void on_pbSimple_clicked(bool checked = false);
+        void on_chkDessous_clicked(bool checked = false);
+        void on_chkDessus_clicked(bool checked = false);
 };
 //-----------------------------------------------------------------------------------------------
 #endif // __CMAINWINDOW_H__

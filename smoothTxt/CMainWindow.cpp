@@ -91,7 +91,10 @@ void CMainWindow::loadLayer(QString layerName, bool force) {
 }
 //-----------------------------------------------------------------------------------------------
 void CMainWindow::showLayer(QString layerName) {
-    editWidget->setMap(map->value(layerName));
+    QString lDessous = QString::number(layerName.toInt()+1).rightJustified(4, '0');
+    QString lDessus = QString::number(layerName.toInt()-1).rightJustified(4, '0');
+
+    editWidget->setMaps(map->value(layerName), map->value(lDessous), map->value(lDessus));
 }
 //-----------------------------------------------------------------------------------------------
 void CMainWindow::saveLayer(QString layer, QString fileName) {
@@ -144,7 +147,13 @@ void CMainWindow::clearLayers(void) {
 }
 //-----------------------------------------------------------------------------------------------
 void CMainWindow::on_layerList_currentItemChanged(QListWidgetItem *current, QListWidgetItem *) {
+    QString lDessous = QString::number(current->text().toInt()+1).rightJustified(4, '0');
+    QString lDessus = QString::number(current->text().toInt()-1).rightJustified(4, '0');
+
     loadLayer(current->text());
+    loadLayer(lDessous);
+    loadLayer(lDessus);
+
     showLayer(current->text());
 }
 //-----------------------------------------------------------------------------------------------
@@ -260,5 +269,13 @@ void CMainWindow::on_pbMoinsY_clicked(bool) {
 //-----------------------------------------------------------------------------------------------
 void CMainWindow::on_pbSimple_clicked(bool) {
     editWidget->simplify();
+}
+//-----------------------------------------------------------------------------------------------
+void CMainWindow::on_chkDessous_clicked(bool checked) {
+    editWidget->setShowDessous(checked);
+}
+//-----------------------------------------------------------------------------------------------
+void CMainWindow::on_chkDessus_clicked(bool checked) {
+    editWidget->setShowDessus(checked);
 }
 //-----------------------------------------------------------------------------------------------

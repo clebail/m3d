@@ -11,7 +11,7 @@ class CEditWidget : public QWidget {
     public:
         CEditWidget(QWidget *parent = 0);
 
-        void setMap(QList<QList<SPoint *>*> *map);
+        void setMaps(QList<QList<SPoint *>*> *map, QList<QList<SPoint *>*> *mDessous, QList<QList<SPoint *>*> *mDessus);
         void dropCurrentPoint(void);
         void addPoint(void);
         void addGroupe(void);
@@ -24,6 +24,8 @@ class CEditWidget : public QWidget {
         void plusY(void);
         void moinsY(void);
         void simplify(void);
+        void setShowDessous(bool show);
+        void setShowDessus(bool show);
     protected:
         virtual void paintEvent(QPaintEvent * event);
         virtual void mouseMoveEvent(QMouseEvent * event);
@@ -32,13 +34,16 @@ class CEditWidget : public QWidget {
         virtual void mouseReleaseEvent(QMouseEvent * event);
     private:
         QList<QList<SPoint *>*> *map;
+        QList<QList<SPoint *>*> *mapDessous;
+        QList<QList<SPoint *>*> *mapDessus;
         int zeroX, zeroY;
         int mouseX, mouseY;
         int selectedList;
         bool mousePressed;
         QList<int> selectedPoints;
+        bool showDessous, showDessus;
 
-        QColor getColor(QString coul);
+        QColor getColor(QString coul, bool real);
         void remplirLine(void);
         void remplirPoint(QList<SPoint *> *list, int idxP1, int idxP2);
         void remplirSurface(void);
@@ -47,6 +52,7 @@ class CEditWidget : public QWidget {
         int testPoint(SPoint *p, SPoint *pv, SPoint *pv1);
         void remplir(SPoint *p);
         bool isContour(SPoint *p);
+        void draw(QList<QList<SPoint *>*> *map, bool real, QPainter *painter);
     signals:
         void mouseMove(int x, int y);
 };
