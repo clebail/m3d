@@ -661,9 +661,15 @@ void CEditWidget::draw(QList<QList<SPoint *>*> *map, bool real, QPainter *painte
             for(j=0;j<list->size();j++) {
                 SPoint *p = list->at(j);
                 QColor color = getColor(p->coul, real);
+                QBrush brush(color);
+
+                if(!real) {
+                   brush.setStyle(Qt::BDiagPattern);
+                }
 
                 painter->setPen(Qt::black);
-                painter->setBrush(color);
+                painter->setBrush(brush);
+
 
                 painter->drawEllipse(p->x+zeroX-STEPX/4, p->y+zeroY-STEPY/4, STEPX/2, STEPY/2);
 
