@@ -661,10 +661,10 @@ void CEditWidget::draw(QList<QList<SPoint *>*> *map, bool real, QPainter *painte
             for(j=0;j<list->size();j++) {
                 SPoint *p = list->at(j);
                 QColor color = getColor(p->coul, real);
-                QBrush brush(color);
+                QBrush brush(real ? color : Qt::black);
 
                 if(!real) {
-                   brush.setStyle(Qt::BDiagPattern);
+                  // brush.setStyle(Qt::BDiagPattern);
                 }
 
                 painter->setPen(Qt::black);
