@@ -37,6 +37,9 @@ bool CMainWindow::eventFilter(QObject *object, QEvent *event) {
 //-----------------------------------------------------------------------------------------------
 void CMainWindow::loadLayers(void) {
     QDir dir(TXTS_FOLDER);
+	QStringList filters;
+    filters << "*.txt";
+	dir.setNameFilters(filters);
     QStringList list = dir.entryList(QDir::Files, QDir::Name);
 
     for(int i=0;i<list.size();i++) {
@@ -81,7 +84,9 @@ void CMainWindow::loadLayer(QString layerName, bool force) {
 
             txtFile.close();
             map->insert(layerName, mainList);
-        }
+        } else {
+			qDebug() << "unable to open file" << txtFileName;
+		}
     }
 }
 //-----------------------------------------------------------------------------------------------

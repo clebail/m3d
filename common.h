@@ -17,7 +17,7 @@
 #define SURFACE_CASE		(STEPX*STEPY/2)
 #define OFFSET_ANGLE		2
 #define ROND_COEF			((double)0.3075)
-#define TXTS_FOLDER         (QString("../txts/"))
+#define TXTS_FOLDER         (QString("../txts/champignon/"))
 #define SVGS_FOLDER         (QString("../svgs/"))
 #define LDRS_FOLDER         (QString("../ldrs/"))
 #define BINVOX_FOLDER       (QString("../binvox/"))
