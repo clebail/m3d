@@ -42,7 +42,7 @@ void C3dView::paintGL() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     if(map != nullptr) {
         QHashIterator<QString, QList<QList<SPoint *>*>*> it(*map);
-        float y = (-map->size() / 2) * UNIT;
+        float y = (map->size() / 2) * UNIT;
 
         glMatrixMode(GL_MODELVIEW);
         glLoadIdentity();
@@ -87,7 +87,7 @@ void C3dView::paintGL() {
                 }
             }
 
-            y += UNIT;
+            y -= UNIT;
         }
     }
 }
