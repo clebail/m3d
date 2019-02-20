@@ -11,7 +11,7 @@ class CEditWidget : public QWidget {
     public:
         CEditWidget(QWidget *parent = 0);
 
-        void setMaps(QList<QList<SPoint *>*> *map, QList<QList<SPoint *>*> *mDessous, QList<QList<SPoint *>*> *mDessus);
+        void setMaps(QList<QList<SPoint *>*> *map, QList<QList<SPoint *>*> *mDessus);
         void dropCurrentPoint(void);
         void addPoint(void);
         void addGroupe(void);
@@ -24,7 +24,7 @@ class CEditWidget : public QWidget {
         void plusY(void);
         void moinsY(void);
         void simplify(void);
-        void setShowDessous(bool show);
+        void setShowInverse(bool inverse);
         void setShowDessus(bool show);
     protected:
         virtual void paintEvent(QPaintEvent * event);
@@ -34,16 +34,15 @@ class CEditWidget : public QWidget {
         virtual void mouseReleaseEvent(QMouseEvent * event);
     private:
         QList<QList<SPoint *>*> *map;
-        QList<QList<SPoint *>*> *mapDessous;
         QList<QList<SPoint *>*> *mapDessus;
         int zeroX, zeroY;
         int mouseX, mouseY;
         int selectedList;
         bool mousePressed;
         QList<int> selectedPoints;
-        bool showDessous, showDessus;
+        bool showDessus, showInverse;
 
-        QColor getColor(QString coul, bool real);
+        QColor getColor(QString coul);
         void remplirLine(void);
         void remplirPoint(QList<SPoint *> *list, int idxP1, int idxP2);
         void remplirSurface(void);

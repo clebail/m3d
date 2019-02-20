@@ -19,18 +19,18 @@ struct SInsideLess {
 };
 //-----------------------------------------------------------------------------------------------
 CEditWidget::CEditWidget(QWidget *parent) : QWidget(parent) {
-    map = mapDessous = mapDessus = 0;
+    map = mapDessus = 0;
     setMouseTracking(true);
     mouseX = mouseY = 0;
     selectedList = -1;
     selectedPoints.clear();
     mousePressed = false;
-    showDessous = showDessus = false;
+    showDessus = false;
+    showInverse = false;
 }
 //-----------------------------------------------------------------------------------------------
-void CEditWidget::setMaps(QList<QList<SPoint *>*> *map, QList<QList<SPoint *>*> *mDessous, QList<QList<SPoint *>*> *mDessus) {
+void CEditWidget::setMaps(QList<QList<SPoint *>*> *map, QList<QList<SPoint *>*> *mDessus) {
     this->map = map;
-    this->mapDessous = mDessous;
     this->mapDessus = mDessus;
 
     selectedList = -1;
@@ -72,22 +72,28 @@ void CEditWidget::dropCurrentPoint(void) {
 }
 //-----------------------------------------------------------------------------------------------
 void CEditWidget::addPoint(void) {
-    if(map != 0 && selectedList != -1 && selectedPoints.size() != 0) {
-        SPoint *p = map->at(selectedList)->at(selectedPoints.at(0));
+    if(map != 0 && selectedList != -1) {
         SPoint *nP = new SPoint;
         int depY = ((STEPY-zeroY)/STEPY)*STEPY;
         int nPIdx;
+        QPoint p = mapFromGlobal(QCursor::pos());
 
-        nP->x = ((STEPX-zeroX)/STEPX)*STEPX;
-        nP->y = depY;
-        while(inList(nP, &nPIdx)) {
+        nP->x = ((p.x()-zeroX)/STEPX)*STEPX;
+        nP->y = ((p.y()-zeroY)/STEPY)*STEPY;
+
+        /*while(inList(nP, &nPIdx)) {
             nP->y+=STEPY;
             if(nP->y >= size().height() - zeroY) {
                 nP->y = depY;
                 nP->x+=STEPX;
             }
+        }*/
+
+        if(selectedPoints.size() != 0) {
+            nP->coul = map->at(selectedList)->at(selectedPoints.at(0))->coul;
+        } else {
+            nP->coul = "0";
         }
-        nP->coul = p->coul;
 
         map->at(selectedList)->insert(selectedPoints.at(0), nP);
 
@@ -287,8 +293,8 @@ void CEditWidget::simplify(void) {
     }
 }
 //-----------------------------------------------------------------------------------------------
-void CEditWidget::setShowDessous(bool show) {
-    showDessous = show;
+void CEditWidget::setShowInverse(bool inverse) {
+    showInverse = inverse;
     repaint();
 }
 //-----------------------------------------------------------------------------------------------
@@ -328,14 +334,16 @@ void CEditWidget::paintEvent(QPaintEvent * event) {
         painter.drawLine(x, 1, x, rect.height()-1);
     }
 
-    if(showDessous) {
-        draw(mapDessous, false, &painter);
-    }
-
-    draw(map, true, &painter);
-
     if(showDessus) {
-        draw(mapDessus, false, &painter);
+        if(showInverse) {
+            draw(mapDessus, false, &painter);
+            draw(map, true, &painter);
+        } else {
+            draw(map, true, &painter);
+            draw(mapDessus, false, &painter);
+        }
+    } else {
+        draw(map, true, &painter);
     }
 }
 //-----------------------------------------------------------------------------------------------
@@ -423,7 +431,7 @@ void CEditWidget::mouseReleaseEvent(QMouseEvent *) {
     mousePressed = false;
 }
 //-----------------------------------------------------------------------------------------------
-QColor CEditWidget::getColor(QString coul, bool real) {
+QColor CEditWidget::getColor(QString coul) {
     QColor result = Qt::black;
 
     if(coul == "15") {
@@ -438,10 +446,6 @@ QColor CEditWidget::getColor(QString coul, bool real) {
         result = QColor(88, 42, 18);
     } else if(coul == "14") {
         result = Qt::yellow;
-    }
-
-    if(!real) {
-        result.setAlpha(32);
     }
 
     return result;
@@ -660,12 +664,8 @@ void CEditWidget::draw(QList<QList<SPoint *>*> *map, bool real, QPainter *painte
 
             for(j=0;j<list->size();j++) {
                 SPoint *p = list->at(j);
-                QColor color = getColor(p->coul, real);
+                QColor color = getColor(p->coul);
                 QBrush brush(real ? color : Qt::black);
-
-                if(!real) {
-                  // brush.setStyle(Qt::BDiagPattern);
-                }
 
                 painter->setPen(Qt::black);
                 painter->setBrush(brush);

@@ -338,16 +338,16 @@
          </property>
          <layout class="QHBoxLayout" name="horizontalLayout_5">
           <item>
-           <widget class="QCheckBox" name="chkDessous">
+           <widget class="QCheckBox" name="chkDessus">
             <property name="text">
-             <string>Afficher la couche du dessous</string>
+             <string>Afficher la couche du dessus</string>
             </property>
            </widget>
           </item>
           <item>
-           <widget class="QCheckBox" name="chkDessus">
+           <widget class="QCheckBox" name="chkInverse">
             <property name="text">
-             <string>Afficher la couche du dessus</string>
+             <string>Inverser les couches</string>
             </property>
            </widget>
           </item>
