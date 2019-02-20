@@ -1,6 +1,7 @@
 #include <QFile>
 #include <QtDebug>
 #include <QStringList>
+#include <iostream>
 
 #include <common.h>
 
@@ -8,28 +9,35 @@
 #define MAX(a,b) (a > b ? a : b)
 
 void cleanAll(QList<QHash<int, int>*> *mainList);
-void loadDatas(int max, QList<QHash<int, int>*> *mainList, int &maxX, int &maxY, int &maxZ);
+void loadDatas(int max, QString projet, QList<QHash<int, int>*> *mainList, int &maxX, int &maxY, int &maxZ);
 
 int main(int argc, char *argv[]) {
     int max = NB_PAS;
     QList<QHash<int, int>*> *mainList = new QList<QHash<int, int>*>();
-    QString binvoxFileName = BINVOX_FOLDER+"out.binvox";
+    QString projet, binvoxFileName, binvoxColorFileName;
     FILE *binvoxFile;
-    QString binvoxColorFileName = binvoxFileName+".color";
     FILE *binvoxColorFile;
 
     int maxX = 0, maxY = 0, maxZ;
 
-    if(argc != 1) {
-        max = QString(argv[1]).toInt();
+    if(argc != 3) {
+        std::cout << "Usage: createBinvox <nb layer> <projet name>" << std::endl;
+        return 0;
     }
 
-    loadDatas(max, mainList, maxX, maxY, maxZ);
+    max = QString(argv[1]).toInt();
+
+
+    projet = QString(argv[2]);
+    binvoxFileName = BINVOX_FOLDER+projet+".binvox";
+    binvoxColorFileName = binvoxFileName+".color";
+
+    loadDatas(max, projet, mainList, maxX, maxY, maxZ);
 
     int dim = MAX(MAX(maxX, maxY), maxZ);
 
-    if((binvoxFile = fopen(binvoxFileName.toAscii().data(), "wb")) != 0) {
-        if((binvoxColorFile = fopen(binvoxColorFileName.toAscii().data(), "w")) != 0) {
+    if((binvoxFile = fopen(binvoxFileName.toAscii().data(), "wb")) != nullptr) {
+        if((binvoxColorFile = fopen(binvoxColorFileName.toAscii().data(), "w")) != nullptr) {
             int x, y, z;
             unsigned char value=0, count=0;
 
@@ -121,14 +129,14 @@ void cleanAll(QList<QHash<int, int>*> *mainList) {
     delete mainList;
 }
 
-void loadDatas(int max, QList<QHash<int, int>*> *mainList, int &maxX, int &maxY, int &maxZ) {
+void loadDatas(int max, QString projet, QList<QHash<int, int>*> *mainList, int &maxX, int &maxY, int &maxZ) {
     int i, minX = 0, minY = 0, plusX, plusY;
     QList<QList<SPoint *> > tmpList;
 
     maxX = maxY=0;
 
     for(i=0;i<max;i++) {
-        QString txtFileName = TXTS_FOLDER+QString::number(i+1).rightJustified(4, '0')+".txt";
+        QString txtFileName = TXTS_FOLDER+projet+"/"+QString::number(i+1).rightJustified(4, '0')+".txt";
         QFile txtFile(txtFileName);
 
         if(txtFile.open(QIODevice::ReadOnly)) {

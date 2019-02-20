@@ -1,12 +1,18 @@
 //-----------------------------------------------------------------------------------------------
 #include <QTranslator>
 #include <QTextCodec>
+#include <iostream>
 #include "CMainWindow.h"
 //-----------------------------------------------------------------------------------------------
 int main(int argc, char *argv[]) {
     QTranslator translator;
     int ret;
     CMainWindow *mainWindow;
+
+    if(argc != 2) {
+        std::cout << "Usage: createBinvox <projet name>" << std::endl;
+        return 0;
+    }
 
     QApplication app(argc, argv);
 
@@ -16,7 +22,7 @@ int main(int argc, char *argv[]) {
     translator.load("qt_fr", app.applicationDirPath());
     app.installTranslator(&translator);
 
-    mainWindow = new CMainWindow();
+    mainWindow = new CMainWindow(QString(argv[1]));
     mainWindow->installEventFilter(mainWindow);
     mainWindow->showMaximized();
 

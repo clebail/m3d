@@ -7,9 +7,10 @@
 #include "CMainWindow.h"
 #include "CChooseColorDialog.h"
 //-----------------------------------------------------------------------------------------------
-CMainWindow::CMainWindow(QWidget *parent) : QMainWindow(parent) {
+CMainWindow::CMainWindow(QString projet, QWidget *parent) : QMainWindow(parent) {
     setupUi(this);
 
+    this->projet = projet;
     map = new QHash<QString, QList<QList<SPoint *>*>*>();
 
     loadLayers();
@@ -40,8 +41,9 @@ bool CMainWindow::eventFilter(QObject *object, QEvent *event) {
 }
 //-----------------------------------------------------------------------------------------------
 void CMainWindow::loadLayers(void) {
-    QDir dir(TXTS_FOLDER);
+    QDir dir(TXTS_FOLDER+projet+"/");
 	QStringList filters;
+
     filters << "*.txt";
 	dir.setNameFilters(filters);
     QStringList list = dir.entryList(QDir::Files, QDir::Name);
@@ -57,7 +59,7 @@ void CMainWindow::loadLayers(void) {
 //-----------------------------------------------------------------------------------------------
 void CMainWindow::loadLayer(QString layerName, bool force) {
     if(!map->contains(layerName) || force) {
-        QString txtFileName = TXTS_FOLDER+layerName+".txt";
+        QString txtFileName = TXTS_FOLDER+projet+"/"+layerName+".txt";
         QFile txtFile(txtFileName);
 
         if(txtFile.open(QIODevice::ReadOnly)) {

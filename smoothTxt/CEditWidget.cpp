@@ -74,20 +74,10 @@ void CEditWidget::dropCurrentPoint(void) {
 void CEditWidget::addPoint(void) {
     if(map != 0 && selectedList != -1) {
         SPoint *nP = new SPoint;
-        int depY = ((STEPY-zeroY)/STEPY)*STEPY;
-        int nPIdx;
         QPoint p = mapFromGlobal(QCursor::pos());
 
         nP->x = ((p.x()-zeroX)/STEPX)*STEPX;
         nP->y = ((p.y()-zeroY)/STEPY)*STEPY;
-
-        /*while(inList(nP, &nPIdx)) {
-            nP->y+=STEPY;
-            if(nP->y >= size().height() - zeroY) {
-                nP->y = depY;
-                nP->x+=STEPX;
-            }
-        }*/
 
         if(selectedPoints.size() != 0) {
             nP->coul = map->at(selectedList)->at(selectedPoints.at(0))->coul;

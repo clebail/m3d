@@ -11,11 +11,13 @@
 class CMainWindow : public QMainWindow, private Ui::CMainWindow {
     Q_OBJECT
     public:
-        CMainWindow(QWidget *parent=0);
+        CMainWindow(QString projet, QWidget *parent=0);
         ~CMainWindow(void);
         virtual bool eventFilter(QObject *object, QEvent *event);
-    private:
+    private:      
         QHash<QString, QList<QList<SPoint *>*>*> *map;
+        QString projet;
+
         void loadLayers(void);
         void loadLayer(QString layerName, bool force = false);
         void showLayer(QString layerName);
