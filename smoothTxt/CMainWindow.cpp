@@ -14,6 +14,8 @@ CMainWindow::CMainWindow(QString projet, QWidget *parent) : QMainWindow(parent) 
     map = new QHash<QString, QList<QList<SPoint *>*>*>();
 
     loadLayers();
+
+    w3d->setMap(map);
 }
 //-----------------------------------------------------------------------------------------------
 CMainWindow::~CMainWindow(void) {
@@ -52,6 +54,7 @@ void CMainWindow::loadLayers(void) {
         QString layer = list.at(i);
 
         layer = layer.left(layer.length()-4);
+        loadLayer(layer);
 
         layerList->addItem(layer);
     }

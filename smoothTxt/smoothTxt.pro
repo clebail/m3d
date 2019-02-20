@@ -6,6 +6,7 @@ TEMPLATE = app
 TARGET = smoothTxt
 DEPENDPATH += .
 INCLUDEPATH += . ..
+QT += opengl
 
 # Input
 SOURCES += main.cpp \
@@ -13,7 +14,8 @@ SOURCES += main.cpp \
     CEditWidget.cpp \
     CChooseColorDialog.cpp \
     CColorLabel.cpp \
-    CContourLess.cpp
+    CContourLess.cpp \
+    C3dView.cpp
 
 FORMS += \
     CMainWindow.ui \
@@ -25,4 +27,5 @@ HEADERS += \
     CEditWidget.h \
     CChooseColorDialog.h \
     CColorLabel.h \
-    CContourLess.h
+    CContourLess.h \
+    C3dView.h
