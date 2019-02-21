@@ -64,6 +64,9 @@
       </property>
       <item>
        <widget class="QListWidget" name="lvLayers">
+        <property name="contextMenuPolicy">
+         <enum>Qt::CustomContextMenu</enum>
+        </property>
         <property name="sortingEnabled">
          <bool>true</bool>
         </property>

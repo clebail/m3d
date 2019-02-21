@@ -8,7 +8,12 @@
 C3dPreview::C3dPreview(QWidget *parent, QHash<QString, QList<QList<SPoint *>*>*> *map) : QDialog(parent) {
     setupUi(this);
 
+    lvMenu = new QMenu(this);
+    lvMenu->addAction(tr("Sélection tous"), this, SLOT(selectedAll()));
+    lvMenu->addAction(tr("Annuler la sélection"), this, SLOT(selectedNone()));
+
     lvLayers->setSelectionMode(QAbstractItemView::MultiSelection);
+    connect(lvLayers, SIGNAL(customContextMenuRequested(const QPoint &)), this, SLOT(popupMenu(const QPoint &)));
 
     this->map = map;
 
@@ -119,5 +124,17 @@ void C3dPreview::on_hsZ_valueChanged(int value) {
 //-----------------------------------------------------------------------------------------------
 void C3dPreview::on_lvLayers_itemSelectionChanged(void) {
     w3d->setMap(computeMap());
+}
+//-----------------------------------------------------------------------------------------------
+void C3dPreview::selectedAll(void) {
+    lvLayers->selectAll();
+}
+//-----------------------------------------------------------------------------------------------
+void C3dPreview::selectedNone(void) {
+    lvLayers->clearSelection();
+}
+//-----------------------------------------------------------------------------------------------
+void C3dPreview::popupMenu(const QPoint &pos) {
+    lvMenu->exec(lvLayers->mapToGlobal(pos));
 }
 //-----------------------------------------------------------------------------------------------
