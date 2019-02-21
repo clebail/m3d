@@ -45,6 +45,7 @@ class CMainWindow : public QMainWindow, private Ui::CMainWindow {
         void on_chkInverse_clicked(bool checked = false);
         void on_chkDessus_clicked(bool checked = false);
         void on_pb3d_clicked(bool checked = false);
+        void on_pbDouble_clicked(bool checked = false);
 };
 //-----------------------------------------------------------------------------------------------
 #endif // __CMAINWINDOW_H__

@@ -26,6 +26,7 @@ class CEditWidget : public QWidget {
         void simplify(void);
         void setShowInverse(bool inverse);
         void setShowDessus(bool show);
+        void dedouble(void);
     protected:
         virtual void paintEvent(QPaintEvent * event);
         virtual void mouseMoveEvent(QMouseEvent * event);
