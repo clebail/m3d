@@ -409,6 +409,13 @@
                   </property>
                  </spacer>
                 </item>
+                <item>
+                 <widget class="QPushButton" name="pb3d">
+                  <property name="text">
+                   <string>Aperçu 3d</string>
+                  </property>
+                 </widget>
+                </item>
                </layout>
               </widget>
              </item>
@@ -426,28 +433,6 @@
               </spacer>
              </item>
             </layout>
-           </widget>
-          </item>
-          <item>
-           <widget class="C3dView" name="w3d" native="true">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="minimumSize">
-             <size>
-              <width>200</width>
-              <height>0</height>
-             </size>
-            </property>
-            <property name="maximumSize">
-             <size>
-              <width>150</width>
-              <height>16777215</height>
-             </size>
-            </property>
            </widget>
           </item>
          </layout>
@@ -507,12 +492,6 @@
    <class>CEditWidget</class>
    <extends>QWidget</extends>
    <header>CEditWidget.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>C3dView</class>
-   <extends>QWidget</extends>
-   <header>C3dView.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

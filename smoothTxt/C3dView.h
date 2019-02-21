@@ -9,27 +9,27 @@
 #include <QColor>
 #include "common.h"
 //-----------------------------------------------------------------------------------------------
+typedef struct _SCube {
+    GLfloat coords[6][4][3];
+    QColor color;
+}SCube;
+//-----------------------------------------------------------------------------------------------
 class C3dView : public QGLWidget {
     Q_OBJECT
 public:
     explicit C3dView(QWidget *parent = nullptr);
-    ~C3dView(void);
     void initializeGL();
     void resizeGL(int width, int height);
     void paintGL();
-    void setMap(QHash<QString, QList<QList<SPoint *>*>*> *map);
+    void setMap(QList<SCube *> map);
+    void setRotate(float rotX, float rotY, float rotZ);
 protected:
-    virtual void mouseMoveEvent(QMouseEvent *event);
     virtual void wheelEvent(QWheelEvent * event);
 private:
-    QTimer *timer;
     float rotX, rotY, rotZ;
     QPoint lastPos;
     float scale;
-    QHash<QString, QList<QList<SPoint *>*>*> *map;
-    QColor getColor(QString coul);
-private slots:
-    void timeout(void);
+    QList<SCube *> map;
 };
 //-----------------------------------------------------------------------------------------------
 #endif // C3DVIEW_H

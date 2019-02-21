@@ -4,22 +4,9 @@
 #include <QWheelEvent>
 #include "C3dView.h"
 //-----------------------------------------------------------------------------------------------
-#define COEF        (10.0f)
-#define UNIT        (1/COEF)
-//-----------------------------------------------------------------------------------------------
 C3dView::C3dView(QWidget *parent) : QGLWidget(parent) {
-    timer = new QTimer(this);
     rotX = rotY = rotZ = 0.0;
     scale = 1.0f;
-    map = nullptr;
-
-    connect(timer, SIGNAL(timeout()), this, SLOT(timeout()));
-
-    timer->start(16);
-}
-//-----------------------------------------------------------------------------------------------
-C3dView::~C3dView(void) {
-    delete timer;
 }
 //-----------------------------------------------------------------------------------------------
 void C3dView::initializeGL() {
@@ -40,101 +27,68 @@ void C3dView::resizeGL(int width, int height) {
 //-----------------------------------------------------------------------------------------------
 void C3dView::paintGL() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    if(map != nullptr) {
-        QHashIterator<QString, QList<QList<SPoint *>*>*> it(*map);
-
+    if(map.size()) {
         glMatrixMode(GL_MODELVIEW);
         glLoadIdentity();
         glTranslatef(0.0, 0.0, -10.0);
-        glRotatef(rotX / 16.0f, 1.0, 0.0, 0.0);
-        glRotatef(rotY / 16.0f, 0.0, 1.0, 0.0);
-        glRotatef(rotZ / 16.0f, 0.0, 0.0, 1.0);
+
+        glRotatef(rotX, 1.0, 0.0, 0.0);
+        glRotatef(rotY, 0.0, 1.0, 0.0);
+        glRotatef(rotZ, 0.0, 0.0, 1.0);
+
         glScalef(scale, scale, scale);
 
-        while (it.hasNext()) {
-            QList<QList<SPoint *>*> *list;
-			float y;
+        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
-            it.next();
-            list = it.value();
-			y = (map->size() / 2 - it.key().toInt()-1) * UNIT;
+        for(int i=0;i<map.size();i++) {
+            for(unsigned int j=0;j<6;++j) {
+                glLoadName(j);
+                glBegin(GL_QUADS);
+                qglColor(Qt::gray);
 
-            for(int k=0;k<list->size();k++) {
-                QList<SPoint *> *sl = list->at(k);
-
-                for(int l=0;l<sl->size();l++) {
-                    float x = (sl->at(l)->x / STEPX) / COEF;
-                    float z = (sl->at(l)->y / STEPY) / COEF;
-
-                    GLfloat coords[6][4][3] = {
-                        { { x+UNIT, y-UNIT, z+UNIT }, { x+UNIT, y-UNIT, z-UNIT }, { x+UNIT, y+UNIT, z-UNIT }, { x+UNIT, y+UNIT, z+UNIT } },
-                        { { x-UNIT, y-UNIT, z-UNIT }, { x-UNIT, y-UNIT, z+UNIT }, { x-UNIT, y+UNIT, z+UNIT }, { x-UNIT, y+UNIT, z-UNIT } },
-                        { { x+UNIT, y-UNIT, z-UNIT }, { x-UNIT, y-UNIT, z-UNIT }, { x-UNIT, y+UNIT, z-UNIT }, { x+UNIT, y+UNIT, z-UNIT } },
-                        { { x-UNIT, y-UNIT, z+UNIT }, { x+UNIT, y-UNIT, z+UNIT }, { x+UNIT, y+UNIT, z+UNIT }, { x-UNIT, y+UNIT, z+UNIT } },
-                        { { x-UNIT, y-UNIT, z-UNIT }, { x+UNIT, y-UNIT, z-UNIT }, { x+UNIT, y-UNIT, z+UNIT }, { x-UNIT, y-UNIT, z+UNIT } },
-                        { { x-UNIT, y+UNIT, z+UNIT }, { x+UNIT, y+UNIT, z+UNIT }, { x+UNIT, y+UNIT, z-UNIT }, { x-UNIT, y+UNIT, z-UNIT } }
-                    };
-
-                    for(unsigned int i=0;i<6;++i) {
-                        glLoadName(i);
-                        glBegin(GL_QUADS);
-                        qglColor(getColor(sl->at(l)->coul));
-
-                        for(int j=0;j<4;++j) {
-                            glVertex3f(coords[i][j][0], coords[i][j][1], coords[i][j][2]);
-                        }
-                        glEnd();
-                    }
+                for(int k=0;k<4;++k) {
+                    glVertex3f(map.at(i)->coords[j][k][0], map.at(i)->coords[j][k][1], map.at(i)->coords[j][k][2]);
                 }
+                glEnd();
             }
+        }
 
-            y -= UNIT;
+        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+        glEnable(GL_POLYGON_OFFSET_FILL);
+        glPolygonOffset(1.0, 1.0);
+
+        for(int i=0;i<map.size();i++) {
+            for(unsigned int j=0;j<6;++j) {
+                glLoadName(j);
+                glBegin(GL_QUADS);
+                qglColor(map.at(i)->color);
+
+                for(int k=0;k<4;++k) {
+                    glVertex3f(map.at(i)->coords[j][k][0], map.at(i)->coords[j][k][1], map.at(i)->coords[j][k][2]);
+                }
+                glEnd();
+            }
         }
     }
 }
 //-----------------------------------------------------------------------------------------------
-void C3dView::setMap(QHash<QString, QList<QList<SPoint *>*>*> *map) {
+void C3dView::setMap(QList<SCube *> map) {
     this->map = map;
+
+    updateGL();
 }
 //-----------------------------------------------------------------------------------------------
-void C3dView::mouseMoveEvent(QMouseEvent *event) {
-    if(!lastPos.isNull()) {
-        int dx = event->x() - lastPos.x();
-        int dy = event->y() - lastPos.y();
+void C3dView::setRotate(float rotX, float rotY, float rotZ) {
+    this->rotX = rotX;
+    this->rotY = rotY;
+    this->rotZ = rotZ;
 
-        if (event->buttons() & Qt::LeftButton) {
-            rotX = (rotX + 8 * dy);
-            rotY = (rotY + 8 * dx);
-        }
-    }
-    lastPos = event->pos();
+    updateGL();
 }
 //-----------------------------------------------------------------------------------------------
 void C3dView::wheelEvent(QWheelEvent * event) {
     event->delta() > 0 ? scale += scale*0.1f : scale -= scale*0.1f;
-}
-//-----------------------------------------------------------------------------------------------
-void C3dView::timeout(void) {
     updateGL();
 }
 //-----------------------------------------------------------------------------------------------
-QColor C3dView::getColor(QString coul) {
-    QColor result = Qt::black;
 
-    if(coul == "15") {
-        result = Qt::white;
-    } else if(coul == "4") {
-        result = Qt::red;
-    } else if(coul == "1") {
-        result = Qt::blue;
-    } else if(coul == "78") {
-        result = QColor(246, 212, 179);
-    } else if(coul == "70") {
-        result = QColor(88, 42, 18);
-    } else if(coul == "14") {
-        result = Qt::yellow;
-    }
-
-    return result;
-}
-//-----------------------------------------------------------------------------------------------

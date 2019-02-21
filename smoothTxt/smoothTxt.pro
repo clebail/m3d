@@ -16,11 +16,13 @@ SOURCES += main.cpp \
     CChooseColorDialog.cpp \
     CColorLabel.cpp \
     CContourLess.cpp \
-    C3dView.cpp
+    C3dView.cpp \
+    C3dPreview.cpp
 
 FORMS += \
     CMainWindow.ui \
-    CChooseColorDialog.ui
+    CChooseColorDialog.ui \
+    C3dPreview.ui
 
 HEADERS += \
 	CMainWindow.h \
@@ -29,4 +31,5 @@ HEADERS += \
     CChooseColorDialog.h \
     CColorLabel.h \
     CContourLess.h \
-    C3dView.h
+    C3dView.h \
+    C3dPreview.h

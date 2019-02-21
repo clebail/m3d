@@ -6,6 +6,7 @@
 #include <QKeyEvent>
 #include "CMainWindow.h"
 #include "CChooseColorDialog.h"
+#include "C3dPreview.h"
 //-----------------------------------------------------------------------------------------------
 CMainWindow::CMainWindow(QString projet, QWidget *parent) : QMainWindow(parent) {
     setupUi(this);
@@ -14,8 +15,6 @@ CMainWindow::CMainWindow(QString projet, QWidget *parent) : QMainWindow(parent) 
     map = new QHash<QString, QList<QList<SPoint *>*>*>();
 
     loadLayers();
-
-    w3d->setMap(map);
 }
 //-----------------------------------------------------------------------------------------------
 CMainWindow::~CMainWindow(void) {
@@ -165,14 +164,14 @@ void CMainWindow::on_layerList_currentItemChanged(QListWidgetItem *current, QLis
 //-----------------------------------------------------------------------------------------------
 void CMainWindow::on_pbSave_clicked(bool) {
     QString layerName = layerList->currentItem()->text();
-    QString txtFileName = TXTS_FOLDER+layerName+".txt";
+    QString txtFileName = TXTS_FOLDER+projet+"/"+layerName+".txt";
 
     saveLayer(layerName, txtFileName);
 }
 //-----------------------------------------------------------------------------------------------
 void CMainWindow::on_pbAdd_clicked(bool) {
     QString nextLayer = QString::number(layerList->item(layerList->count()-1)->text().toInt()+1).rightJustified(4, '0');
-    QString fileName = TXTS_FOLDER+nextLayer+".txt";
+    QString fileName = TXTS_FOLDER+projet+"/"+nextLayer+".txt";
 
     map->insert(nextLayer, new QList<QList<SPoint *>*>());
 
@@ -190,13 +189,13 @@ void CMainWindow::on_pbSupprimer_clicked(bool) {
         int i;
 
         for(i=currentIndex+1;i<layerList->count();i++) {
-           QString fileName = TXTS_FOLDER+layerList->item(i-1)->text()+".txt";
+           QString fileName = TXTS_FOLDER+projet+"/"+layerList->item(i-1)->text()+".txt";
 
            loadLayer(layerList->item(i)->text());
            saveLayer(layerList->item(i)->text(), fileName);
         }
 
-        QFile f(TXTS_FOLDER+layerList->item(layerList->count()-1)->text()+".txt");
+        QFile f(TXTS_FOLDER+projet+"/"+layerList->item(layerList->count()-1)->text()+".txt");
         f.remove();
 
         clearLayers();
@@ -283,5 +282,11 @@ void CMainWindow::on_chkInverse_clicked(bool checked) {
 //-----------------------------------------------------------------------------------------------
 void CMainWindow::on_chkDessus_clicked(bool checked) {
     editWidget->setShowDessus(checked);
+}
+//-----------------------------------------------------------------------------------------------
+void CMainWindow::on_pb3d_clicked(bool) {
+    C3dPreview preview(this, map);
+
+    preview.exec();
 }
 //-----------------------------------------------------------------------------------------------

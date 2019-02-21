@@ -11,7 +11,7 @@
 class CMainWindow : public QMainWindow, private Ui::CMainWindow {
     Q_OBJECT
     public:
-        CMainWindow(QString projet, QWidget *parent=0);
+        CMainWindow(QString projet, QWidget *parent=nullptr);
         ~CMainWindow(void);
         virtual bool eventFilter(QObject *object, QEvent *event);
     private:      
@@ -44,6 +44,7 @@ class CMainWindow : public QMainWindow, private Ui::CMainWindow {
         void on_pbSimple_clicked(bool checked = false);
         void on_chkInverse_clicked(bool checked = false);
         void on_chkDessus_clicked(bool checked = false);
+        void on_pb3d_clicked(bool checked = false);
 };
 //-----------------------------------------------------------------------------------------------
 #endif // __CMAINWINDOW_H__
