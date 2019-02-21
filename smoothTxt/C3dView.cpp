@@ -42,7 +42,6 @@ void C3dView::paintGL() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     if(map != nullptr) {
         QHashIterator<QString, QList<QList<SPoint *>*>*> it(*map);
-        float y = (map->size() / 2) * UNIT;
 
         glMatrixMode(GL_MODELVIEW);
         glLoadIdentity();
@@ -54,9 +53,11 @@ void C3dView::paintGL() {
 
         while (it.hasNext()) {
             QList<QList<SPoint *>*> *list;
+			float y;
 
             it.next();
             list = it.value();
+			y = (map->size() / 2 - it.key().toInt()-1) * UNIT;
 
             for(int k=0;k<list->size();k++) {
                 QList<SPoint *> *sl = list->at(k);
