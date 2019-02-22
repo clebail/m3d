@@ -35,6 +35,10 @@ bool CMainWindow::eventFilter(QObject *object, QEvent *event) {
             on_pbAddPoint_clicked();
 
             return true;
+        } else if(keyEvent->key() == Qt::Key_F2) {
+            editWidget->remplir();
+
+            return true;
         }
     }
 

@@ -44,15 +44,13 @@ class CEditWidget : public QWidget {
         bool showDessus, showInverse;
 
         QColor getColor(QString coul);
-        void remplirLine(void);
-        void remplirPoint(QList<SPoint *> *list, int idxP1, int idxP2);
-        void remplirSurface(void);
-        bool inList(SPoint *p, int *pos);
+         bool inList(SPoint *p, int *pos);
         bool inSurface(SPoint *p);
         int testPoint(SPoint *p, SPoint *pv, SPoint *pv1);
         void remplir(SPoint *p);
         bool isContour(SPoint *p);
         void draw(QList<QList<SPoint *>*> *map, bool real, QPainter *painter);
+		void remplitPoint(int x, int y);
     signals:
         void mouseMove(int x, int y);
 };

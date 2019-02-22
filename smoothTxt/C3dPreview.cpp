@@ -3,7 +3,9 @@
 //-----------------------------------------------------------------------------------------------
 #define COEF        (10.0f)
 #define UNIT        (1/COEF)
-#define UNIT2       (UNIT/2)
+#define UNITY		(UNIT*1.2f)
+#define UNIT2       (UNIT/2.0f)
+#define UNITY2		(UNITY/2.0f)
 //-----------------------------------------------------------------------------------------------
 C3dPreview::C3dPreview(QWidget *parent, QHash<QString, QList<QList<SPoint *>*>*> *map) : QDialog(parent) {
     setupUi(this);
@@ -58,18 +60,18 @@ QList<SCube *> C3dPreview::computeMap(void) {
 
                 for(int l=0;l<sl->size();l++) {
                     float x = (sl->at(l)->x / STEPX) / COEF;;
-                    float y = (map->size() / 2 - it.key().toInt() - 1) * UNIT;
+                    float y = (map->size() / 2 - it.key().toInt() - 1) * UNITY;
                     float z = (sl->at(l)->y / STEPY) / COEF;
 
                     SCube * cube = new SCube();
 
                      GLfloat coords[6][4][3] = {
-                        { { x+UNIT2, y-UNIT2, z+UNIT2 }, { x+UNIT2, y-UNIT2, z-UNIT2 }, { x+UNIT2, y+UNIT2, z-UNIT2 }, { x+UNIT2, y+UNIT2, z+UNIT2 } },
-                        { { x-UNIT2, y-UNIT2, z-UNIT2 }, { x-UNIT2, y-UNIT2, z+UNIT2 }, { x-UNIT2, y+UNIT2, z+UNIT2 }, { x-UNIT2, y+UNIT2, z-UNIT2 } },
-                        { { x+UNIT2, y-UNIT2, z-UNIT2 }, { x-UNIT2, y-UNIT2, z-UNIT2 }, { x-UNIT2, y+UNIT2, z-UNIT2 }, { x+UNIT2, y+UNIT2, z-UNIT2 } },
-                        { { x-UNIT2, y-UNIT2, z+UNIT2 }, { x+UNIT2, y-UNIT2, z+UNIT2 }, { x+UNIT2, y+UNIT2, z+UNIT2 }, { x-UNIT2, y+UNIT2, z+UNIT2 } },
-                        { { x-UNIT2, y-UNIT2, z-UNIT2 }, { x+UNIT2, y-UNIT2, z-UNIT2 }, { x+UNIT2, y-UNIT2, z+UNIT2 }, { x-UNIT2, y-UNIT2, z+UNIT2 } },
-                        { { x-UNIT2, y+UNIT2, z+UNIT2 }, { x+UNIT2, y+UNIT2, z+UNIT2 }, { x+UNIT2, y+UNIT2, z-UNIT2 }, { x-UNIT2, y+UNIT2, z-UNIT2 } }
+                        { { x+UNIT2, y-UNITY2, z+UNIT2 }, { x+UNIT2, y-UNITY2, z-UNIT2 }, { x+UNIT2, y+UNITY2, z-UNIT2 }, { x+UNIT2, y+UNITY2, z+UNIT2 } },
+                        { { x-UNIT2, y-UNITY2, z-UNIT2 }, { x-UNIT2, y-UNITY2, z+UNIT2 }, { x-UNIT2, y+UNITY2, z+UNIT2 }, { x-UNIT2, y+UNITY2, z-UNIT2 } },
+                        { { x+UNIT2, y-UNITY2, z-UNIT2 }, { x-UNIT2, y-UNITY2, z-UNIT2 }, { x-UNIT2, y+UNITY2, z-UNIT2 }, { x+UNIT2, y+UNITY2, z-UNIT2 } },
+                        { { x-UNIT2, y-UNITY2, z+UNIT2 }, { x+UNIT2, y-UNITY2, z+UNIT2 }, { x+UNIT2, y+UNITY2, z+UNIT2 }, { x-UNIT2, y+UNITY2, z+UNIT2 } },
+                        { { x-UNIT2, y-UNITY2, z-UNIT2 }, { x+UNIT2, y-UNITY2, z-UNIT2 }, { x+UNIT2, y-UNITY2, z+UNIT2 }, { x-UNIT2, y-UNITY2, z+UNIT2 } },
+                        { { x-UNIT2, y+UNITY2, z+UNIT2 }, { x+UNIT2, y+UNITY2, z+UNIT2 }, { x+UNIT2, y+UNITY2, z-UNIT2 }, { x-UNIT2, y+UNITY2, z-UNIT2 } }
                     };
 
                     memcpy(&cube->coords, &coords, sizeof(GLfloat[6][4][3]));

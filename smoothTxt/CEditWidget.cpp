@@ -129,12 +129,22 @@ void CEditWidget::setColor(QString color) {
 }
 //-----------------------------------------------------------------------------------------------
 void CEditWidget::remplir(void) {
-    if(map != 0 && selectedList != -1) {
-         remplirLine();
-         remplirSurface();
+	if(map != 0 && selectedList != -1) {
+		QPoint p = mapFromGlobal(QCursor::pos());
 
-         repaint();
-    }
+		int x = p.x() - zeroX;
+		int y = p.y() - zeroY;
+
+		x += x < 0 ? -STEPX/2 : STEPX/2;
+		y += y < 0 ? -STEPX/2 : STEPX/2;
+
+		x = (x/STEPX)*STEPX;
+		y = (y/STEPX)*STEPX;
+		
+		remplitPoint(x, y);
+
+		repaint();
+	}
 }
 //-----------------------------------------------------------------------------------------------
 void CEditWidget::zapLigne(void) {
@@ -473,83 +483,6 @@ QColor CEditWidget::getColor(QString coul) {
     return result;
 }
 //-----------------------------------------------------------------------------------------------
-void CEditWidget::remplirLine(void) {
-    int i;
-    QList<SPoint *> *list = map->at(selectedList);
-
-    i=0;
-    while(i<list->size()-1) {
-        remplirPoint(list, i, i+1);
-        i++;
-    }
-    remplirPoint(list, list->size()-1, 0);
-}
-//-----------------------------------------------------------------------------------------------
-void CEditWidget::remplirPoint(QList<SPoint *> *list, int idxP1, int idxP2) {
-    SPoint *p1 = list->at(idxP1);
-    SPoint *p2 = list->at(idxP2);
-    int diffX = p1->x - p2->x, diffY = p1->y - p2->y;
-
-    if(abs(diffX) > STEPX || abs(diffY) > STEPY) {
-        SPoint *p = new SPoint;
-
-        p->x = p1->x + (diffX > 0 ? -STEPX : diffX < 0 ? STEPX : 0);
-        p->y = p1->y + (diffY > 0 ? -STEPY : diffY < 0 ? STEPY : 0);
-
-        p->coul = p1->coul;
-
-        list->insert(idxP2, p);
-        remplirPoint(list, idxP2, idxP2+1);
-    }
-}
-//-----------------------------------------------------------------------------------------------
-void CEditWidget::remplirSurface(void) {
-    QList<SPoint *> *list = map->at(selectedList);
-    SPoint *p = list->last();
-    SPoint *newP = new SPoint;
-    int newPIdx;
-
-    newP->coul = p->coul;
-
-    newP->x = p->x+STEPX;
-    newP->y = p->y;
-    if(!inList(newP, &newPIdx) && inSurface(newP)) {
-        list->append(newP);
-        remplir(newP);
-
-        return;
-    }
-
-    newP->x = p->x-STEPX;
-    newP->y = p->y;
-    if(!inList(newP, &newPIdx) && inSurface(newP)) {
-        list->append(newP);
-        remplir(newP);
-
-        return;
-    }
-
-    newP->x = p->x;
-    newP->y = p->y+STEPY;
-    if(!inList(newP, &newPIdx) && inSurface(newP)) {
-        list->append(newP);
-        remplir(newP);
-
-        return;
-    }
-
-    newP->x = p->x;
-    newP->y = p->y-STEPY;
-    if(!inList(newP, &newPIdx) && inSurface(newP)) {
-        list->append(newP);
-        remplir(newP);
-
-        return;
-    }
-
-    delete newP;
-}
-//-----------------------------------------------------------------------------------------------
 bool CEditWidget::inList(SPoint *p, int *pos) {
     QList<SPoint *> *list = map->at(selectedList);
     int i;
@@ -703,5 +636,36 @@ void CEditWidget::draw(QList<QList<SPoint *>*> *map, bool real, QPainter *painte
             }
         }
     }
+}
+//-----------------------------------------------------------------------------------------------
+void CEditWidget::remplitPoint(int x, int y) {
+	QList<SPoint *> *list = map->at(selectedList);
+	SPoint *p;
+    int i;
+
+    for(i=0;i<list->size();i++) {
+        SPoint *pv = list->at(i);
+
+        if(pv->x == x && pv->y == y) {
+			return;
+		}
+    }
+    
+    p = new SPoint;
+	p->x = x;
+	p->y = y;
+	
+	if(selectedPoints.size() != 0) {
+		p->coul = map->at(selectedList)->at(selectedPoints.at(0))->coul;
+	} else {
+		p->coul = "0";
+	}
+	
+	list->append(p);
+	
+	remplitPoint(x + STEPX, y);
+	remplitPoint(x - STEPX, y);
+	remplitPoint(x, y + STEPY);
+	remplitPoint(x, y - STEPY);
 }
 //-----------------------------------------------------------------------------------------------
