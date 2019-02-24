@@ -41,16 +41,14 @@ void C3dView::paintGL() {
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
         for(int i=0;i<map.size();i++) {
-            for(unsigned int j=0;j<6;++j) {
-                glLoadName(j);
-                glBegin(GL_QUADS);
-                qglColor(Qt::gray);
+            //glLoadName(j);
+            glBegin(GL_QUADS);
+            qglColor(Qt::gray);
 
-                for(int k=0;k<4;++k) {
-                    glVertex3f(map.at(i)->coords[j][k][0], map.at(i)->coords[j][k][1], map.at(i)->coords[j][k][2]);
-                }
-                glEnd();
+            for(int k=0;k<4;++k) {
+                glVertex3f(map.at(i)->coords[k][0], map.at(i)->coords[k][1], map.at(i)->coords[k][2]);
             }
+            glEnd();
         }
 
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
@@ -58,21 +56,21 @@ void C3dView::paintGL() {
         glPolygonOffset(1.0, 1.0);
 
         for(int i=0;i<map.size();i++) {
-            for(unsigned int j=0;j<6;++j) {
+            //for(unsigned int j=0;j<6;++j) {
                 glLoadName(j);
                 glBegin(GL_QUADS);
                 qglColor(map.at(i)->color);
 
                 for(int k=0;k<4;++k) {
-                    glVertex3f(map.at(i)->coords[j][k][0], map.at(i)->coords[j][k][1], map.at(i)->coords[j][k][2]);
+                    glVertex3f(map.at(i)->coords[k][0], map.at(i)->coords[k][1], map.at(i)->coords[k][2]);
                 }
                 glEnd();
-            }
+           // }
         }
     }
 }
 //-----------------------------------------------------------------------------------------------
-void C3dView::setMap(QList<SCube *> map) {
+void C3dView::setMap(QList<SFace *> map) {
     this->map = map;
 
     updateGL();
@@ -91,4 +89,3 @@ void C3dView::wheelEvent(QWheelEvent * event) {
     updateGL();
 }
 //-----------------------------------------------------------------------------------------------
-

@@ -3,9 +3,11 @@
 //-----------------------------------------------------------------------------------------------
 #define COEF        (10.0f)
 #define UNIT        (1/COEF)
-#define UNITY		(UNIT*1.2f)
+#define UNITY		(UNIT*1.23f)
 #define UNIT2       (UNIT/2.0f)
 #define UNITY2		(UNITY/2.0f)
+#define KNOBRADIUS  (UNIT/3.25f)
+#define KNOBHEIGHT  (UNIT/4.6f)
 //-----------------------------------------------------------------------------------------------
 C3dPreview::C3dPreview(QWidget *parent, QHash<QString, QList<QList<SPoint *>*>*> *map) : QDialog(parent) {
     setupUi(this);
@@ -21,8 +23,13 @@ C3dPreview::C3dPreview(QWidget *parent, QHash<QString, QList<QList<SPoint *>*>*>
 
     if(map != nullptr) {
         createList();
-        w3d->setMap(computeMap());
+        computeMap();
+        w3d->setMap(sfMap);
     }
+}
+//-----------------------------------------------------------------------------------------------
+C3dPreview::~C3dPreview(void) {
+    clearMap();
 }
 //-----------------------------------------------------------------------------------------------
 void C3dPreview::createList(void) {
@@ -38,11 +45,12 @@ void C3dPreview::createList(void) {
     lvLayers->selectAll();
 }
 //-----------------------------------------------------------------------------------------------
-QList<SCube *> C3dPreview::computeMap(void) {
-    QList<SCube *> result;
+void C3dPreview::computeMap(void) {
     QHashIterator<QString, QList<QList<SPoint *>*>*> it(*map);
     QList<QListWidgetItem *> selectedItems = lvLayers->selectedItems();
     QStringList selectedText;
+
+    clearMap();
 
     for(int i=0;i<selectedItems.size();i++) {
         selectedText << selectedItems.at(i)->text();
@@ -58,14 +66,13 @@ QList<SCube *> C3dPreview::computeMap(void) {
             for(int i=0;i<list->size();i++) {
                 QList<SPoint *> *sl = list->at(i);
 
-                for(int l=0;l<sl->size();l++) {
-                    float x = (sl->at(l)->x / STEPX) / COEF;;
+                for(int j=0;j<sl->size();j++) {
+                    float x = (sl->at(j)->x / STEPX) / COEF;;
                     float y = (map->size() / 2 - it.key().toInt() - 1) * UNITY;
-                    float z = (sl->at(l)->y / STEPY) / COEF;
+                    float z = (sl->at(j)->y / STEPY) / COEF;
+                    QColor color = getColor(sl->at(j)->coul);
 
-                    SCube * cube = new SCube();
-
-                     GLfloat coords[6][4][3] = {
+                    GLfloat coords[6][4][3] = {
                         { { x+UNIT2, y-UNITY2, z+UNIT2 }, { x+UNIT2, y-UNITY2, z-UNIT2 }, { x+UNIT2, y+UNITY2, z-UNIT2 }, { x+UNIT2, y+UNITY2, z+UNIT2 } },
                         { { x-UNIT2, y-UNITY2, z-UNIT2 }, { x-UNIT2, y-UNITY2, z+UNIT2 }, { x-UNIT2, y+UNITY2, z+UNIT2 }, { x-UNIT2, y+UNITY2, z-UNIT2 } },
                         { { x+UNIT2, y-UNITY2, z-UNIT2 }, { x-UNIT2, y-UNITY2, z-UNIT2 }, { x-UNIT2, y+UNITY2, z-UNIT2 }, { x+UNIT2, y+UNITY2, z-UNIT2 } },
@@ -74,16 +81,18 @@ QList<SCube *> C3dPreview::computeMap(void) {
                         { { x-UNIT2, y+UNITY2, z+UNIT2 }, { x+UNIT2, y+UNITY2, z+UNIT2 }, { x+UNIT2, y+UNITY2, z-UNIT2 }, { x-UNIT2, y+UNITY2, z-UNIT2 } }
                     };
 
-                    memcpy(&cube->coords, &coords, sizeof(GLfloat[6][4][3]));
-                    cube->color = getColor(sl->at(l)->coul);
+                    for(int k=0;k<6;k++) {
+                        SFace *face = new SFace();
 
-                    result.append(cube);
+                        memcpy(&face->coords, &coords[k], sizeof(GLfloat[4][3]));
+                        face->color = color;
+
+                        sfMap.append(face);
+                    }
                 }
             }
         }
     }
-
-    return result;
 }
 //-----------------------------------------------------------------------------------------------
 QColor C3dPreview::getColor(QString coul) {
@@ -106,6 +115,13 @@ QColor C3dPreview::getColor(QString coul) {
     return result;
 }
 //-----------------------------------------------------------------------------------------------
+void C3dPreview::clearMap(void) {
+    for(int i=0;i<sfMap.size();i++) {
+        delete sfMap.at(i);
+    }
+    sfMap.clear();
+}
+//-----------------------------------------------------------------------------------------------
 void C3dPreview::on_hsX_valueChanged(int value) {
     w3d->setRotate(static_cast<float>(hsX->value()), static_cast<float>(hsY->value()), static_cast<float>(hsZ->value()));
 
@@ -125,7 +141,8 @@ void C3dPreview::on_hsZ_valueChanged(int value) {
 }
 //-----------------------------------------------------------------------------------------------
 void C3dPreview::on_lvLayers_itemSelectionChanged(void) {
-    w3d->setMap(computeMap());
+    computeMap();
+    w3d->setMap(sfMap);
 }
 //-----------------------------------------------------------------------------------------------
 void C3dPreview::selectedAll(void) {

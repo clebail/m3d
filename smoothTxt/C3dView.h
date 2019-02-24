@@ -9,10 +9,10 @@
 #include <QColor>
 #include "common.h"
 //-----------------------------------------------------------------------------------------------
-typedef struct _SCube {
-    GLfloat coords[6][4][3];
+typedef struct _SFace {
+    GLfloat coords[4][3];
     QColor color;
-}SCube;
+}SFace;
 //-----------------------------------------------------------------------------------------------
 class C3dView : public QGLWidget {
     Q_OBJECT
@@ -21,7 +21,7 @@ public:
     void initializeGL();
     void resizeGL(int width, int height);
     void paintGL();
-    void setMap(QList<SCube *> map);
+    void setMap(QList<SFace *> map);
     void setRotate(float rotX, float rotY, float rotZ);
 protected:
     virtual void wheelEvent(QWheelEvent * event);
@@ -29,7 +29,7 @@ private:
     float rotX, rotY, rotZ;
     QPoint lastPos;
     float scale;
-    QList<SCube *> map;
+    QList<SFace *> map;
 };
 //-----------------------------------------------------------------------------------------------
 #endif // C3DVIEW_H
