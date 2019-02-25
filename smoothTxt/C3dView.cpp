@@ -41,7 +41,6 @@ void C3dView::paintGL() {
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
         for(int i=0;i<map.size();i++) {
-            //glLoadName(j);
             glBegin(GL_QUADS);
             qglColor(Qt::gray);
 
@@ -56,16 +55,13 @@ void C3dView::paintGL() {
         glPolygonOffset(1.0, 1.0);
 
         for(int i=0;i<map.size();i++) {
-            //for(unsigned int j=0;j<6;++j) {
-                glLoadName(j);
-                glBegin(GL_QUADS);
-                qglColor(map.at(i)->color);
+            glBegin(GL_QUADS);
+			qglColor(map.at(i)->color);
 
-                for(int k=0;k<4;++k) {
-                    glVertex3f(map.at(i)->coords[k][0], map.at(i)->coords[k][1], map.at(i)->coords[k][2]);
-                }
-                glEnd();
-           // }
+			for(int k=0;k<4;++k) {
+				glVertex3f(map.at(i)->coords[k][0], map.at(i)->coords[k][1], map.at(i)->coords[k][2]);
+			}
+			glEnd();
         }
     }
 }
