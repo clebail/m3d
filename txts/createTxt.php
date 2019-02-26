@@ -2,11 +2,12 @@
 $handle = fopen($_SERVER["argv"][1], "r");
 
 $couleur = isset($_SERVER["argv"][2]) ? $_SERVER["argv"][2] : 0;
-$append = isset($_SERVER["argv"][3]);
+$nbCouche = isset($_SERVER["argv"][3]) ? $_SERVER["argv"][3] : 100;
+$append = isset($_SERVER["argv"][4]);
 
 if ($handle) {
 	$content = "";
-	$fileIdx = 0;
+	$fileIdx = $nbCouche;
 
 	while (($line = fgets($handle)) !== false) {
         $line = trim($line);
@@ -19,7 +20,7 @@ if ($handle) {
 				}
 				
 				$content = "";
-				$fileIdx++;
+				$fileIdx--;
 			} else {			
 				$x = ((intval($items[2]) - 390) / 20) * 15;
 				$y = ((intval($items[4]) - 390) / 20) * 15;
