@@ -11,6 +11,7 @@ CChooseColorDialog::CChooseColorDialog(QWidget *parent) : QDialog(parent) {
     connect(lblPink, SIGNAL(doubleClicked(void)), this, SLOT(lblDoubleClicked(void)));
     connect(lblBrown, SIGNAL(doubleClicked(void)), this, SLOT(lblDoubleClicked(void)));
     connect(lblYellow, SIGNAL(doubleClicked(void)), this, SLOT(lblDoubleClicked(void)));
+    connect(lblGreen, SIGNAL(doubleClicked(void)), this, SLOT(lblDoubleClicked(void)));
 }
 //-----------------------------------------------------------------------------------------------
 QString CChooseColorDialog::getColor(void) {

@@ -110,6 +110,8 @@ QColor C3dPreview::getColor(QString coul) {
         result = QColor(88, 42, 18);
     } else if(coul == "14") {
         result = Qt::yellow;
+    } else if(coul == "2") {
+        result = QColor(0, 140, 14);
     }
 
     return result;

@@ -82,7 +82,7 @@ void CMainWindow::loadLayer(QString layerName, bool force) {
 
                 point->x = fields[0].toInt();
                 point->y = fields[1].toInt();
-                point->coul = fields[2];
+                point->coul = fields[2] == "10" ? "2" : fields[2];
 
                 if(id != oldId) {
                     list = new QList<SPoint *>();
