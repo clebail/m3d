@@ -335,19 +335,15 @@ void CEditWidget::dedouble(void) {
     repaint();
 }
 //-----------------------------------------------------------------------------------------------
-void CEditWidget::paintEvent(QPaintEvent * event) {
+void CEditWidget::paintEvent(QPaintEvent *) {
     QPainter painter(this);
-    QRect rect = event->rect().adjusted(0, 0, -1, -1);
+    QRect rect = geometry();
     QPen linePen(Qt::black);
     int x, y;
 
     linePen.setStyle(Qt::DotLine);
 
     painter.setBrush(Qt::white);
-    painter.setPen(Qt::black);
-
-    painter.drawRect(rect);
-
     painter.setPen(linePen);
 
     for(y=zeroY;y>0;y-=STEPY) {

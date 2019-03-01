@@ -4,6 +4,7 @@
 #include <QStringList>
 #include <QMessageBox>
 #include <QKeyEvent>
+#include <QScrollBar>
 #include "CMainWindow.h"
 #include "CChooseColorDialog.h"
 #include "C3dPreview.h"
@@ -13,6 +14,14 @@ CMainWindow::CMainWindow(QString projet, QWidget *parent) : QMainWindow(parent) 
 
     this->projet = projet;
     map = new QHash<QString, QList<QList<SPoint *>*>*>();
+
+    sbArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
+    sbArea->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
+
+    sbArea->widget()->setMinimumWidth(200*STEPX);
+    sbArea->widget()->setMinimumHeight(200*STEPY);
+    sbArea->widget()->setMaximumWidth(200*STEPX);
+    sbArea->widget()->setMaximumHeight(200*STEPY);
 
     loadLayers();
 }

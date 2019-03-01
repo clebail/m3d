@@ -7,7 +7,7 @@ $append = isset($_SERVER["argv"][4]);
 
 if ($handle) {
 	$content = "";
-	$fileIdx = $nbCouche;
+	$fileIdx = $nbCouche+1;
 
 	while (($line = fgets($handle)) !== false) {
         $line = trim($line);
