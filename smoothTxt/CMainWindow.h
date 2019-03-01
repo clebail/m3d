@@ -17,12 +17,14 @@ class CMainWindow : public QMainWindow, private Ui::CMainWindow {
     private:      
         QHash<QString, QList<QList<SPoint *>*>*> *map;
         QString projet;
+        int stepx, stepy;
 
         void loadLayers(void);
         void loadLayer(QString layerName, bool force = false);
         void showLayer(QString layerName);
         void saveLayer(QString layer, QString fileName);
         void clearLayers(void);
+        void getMapCenter(QList<QList<SPoint *>*> *list, QPoint &center);
     private slots:
         void on_layerList_currentItemChanged(QListWidgetItem *current, QListWidgetItem *previous);
         void on_pbSave_clicked(bool checked = false);

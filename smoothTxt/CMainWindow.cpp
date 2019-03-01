@@ -18,10 +18,13 @@ CMainWindow::CMainWindow(QString projet, QWidget *parent) : QMainWindow(parent) 
     sbArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
     sbArea->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
 
-    sbArea->widget()->setMinimumWidth(200*STEPX);
-    sbArea->widget()->setMinimumHeight(200*STEPY);
-    sbArea->widget()->setMaximumWidth(200*STEPX);
-    sbArea->widget()->setMaximumHeight(200*STEPY);
+    stepx = STEPX;
+    stepy = STEPY;
+
+    sbArea->widget()->setMinimumWidth(200*stepx);
+    sbArea->widget()->setMinimumHeight(200*stepy);
+    sbArea->widget()->setMaximumWidth(200*stepx);
+    sbArea->widget()->setMaximumHeight(200*stepy);
 
     loadLayers();
 }
@@ -113,8 +116,20 @@ void CMainWindow::loadLayer(QString layerName, bool force) {
 //-----------------------------------------------------------------------------------------------
 void CMainWindow::showLayer(QString layerName) {
     QString lDessus = QString::number(layerName.toInt()-1).rightJustified(4, '0');
+    QPoint center;
+    double ax, ay, bx, by;
 
     editWidget->setMaps(map->value(layerName), map->value(lDessus));
+    getMapCenter(map->value(layerName), center);
+
+    bx = 100.0 * stepx;
+    by = 100.0 * stepy;
+
+    ax = sbArea->horizontalScrollBar()->maximum() / (200.0 * stepx);
+    ay = sbArea->verticalScrollBar()->maximum() / (200.0 * stepy);
+
+    sbArea->horizontalScrollBar()->setValue(static_cast<int>(center.x() * ax + bx - sbArea->size().width() / 2));
+    sbArea->verticalScrollBar()->setValue(static_cast<int>(center.y() * ay + by - sbArea->size().height() / 2));
 }
 //-----------------------------------------------------------------------------------------------
 void CMainWindow::saveLayer(QString layer, QString fileName) {
@@ -164,6 +179,40 @@ void CMainWindow::clearLayers(void) {
 
         delete list;
     }
+}
+//-----------------------------------------------------------------------------------------------
+void CMainWindow::getMapCenter(QList<QList<SPoint *>*> *list, QPoint &center) {
+    int minX = 0, minY = 0, maxX = 0, maxY = 0;
+    bool first = true;
+
+    for(int i=0;i<list->size();i++) {
+        QList<SPoint *> *l = list->at(i);
+
+        for(int j=0;j<l->size();j++) {
+            SPoint *p = l->at(j);
+
+            if(first || p->x < minX) {
+                minX = p->x;
+            }
+
+            if(first || p->y < minY) {
+                minY = p->y;
+            }
+
+            if(first || p->x > maxX) {
+                maxX = p->x;
+            }
+
+            if(first || p->y > maxY) {
+                maxY = p->y;
+            }
+
+            first = false;
+        }
+    }
+
+    center.setX(((minX + maxX) / 2) * 1);
+    center.setY(((minY + maxY) / 2) * 1);
 }
 //-----------------------------------------------------------------------------------------------
 void CMainWindow::on_layerList_currentItemChanged(QListWidgetItem *current, QListWidgetItem *) {

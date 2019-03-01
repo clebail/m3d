@@ -27,6 +27,8 @@ CEditWidget::CEditWidget(QWidget *parent) : QWidget(parent) {
     mousePressed = false;
     showDessus = false;
     showInverse = false;
+    stepx = 10;//STEPX;
+    stepy = 10;//STEPY;
 }
 //-----------------------------------------------------------------------------------------------
 void CEditWidget::setMaps(QList<QList<SPoint *>*> *map, QList<QList<SPoint *>*> *mDessus) {
@@ -79,12 +81,14 @@ void CEditWidget::addPoint(void) {
         int x = p.x() - zeroX;
         int y = p.y() - zeroY;
 
-        x += x < 0 ? -STEPX/2 : STEPX/2;
-        y += y < 0 ? -STEPX/2 : STEPX/2;
+        x += x < 0 ? -stepx/2 : stepx/2;
+        y += y < 0 ? -stepy/2 : stepy/2;
 
-        x = (x/STEPX)*STEPX;
-        y = (y/STEPX)*STEPX;
+        x = (x/stepx)*stepx;
+        y = (y/stepy)*stepy;
 
+        x = (x/stepx)*STEPX;
+        y = (y/stepy)*STEPY;
 
         nP->x = x;
         nP->y = y;
@@ -135,11 +139,14 @@ void CEditWidget::remplir(void) {
 		int x = p.x() - zeroX;
 		int y = p.y() - zeroY;
 
-		x += x < 0 ? -STEPX/2 : STEPX/2;
-		y += y < 0 ? -STEPX/2 : STEPX/2;
+        x += x < 0 ? -stepx/2 : stepx/2;
+        y += y < 0 ? -stepy/2 : stepy/2;
 
-		x = (x/STEPX)*STEPX;
-		y = (y/STEPX)*STEPX;
+        x = (x/stepx)*stepx;
+        y = (y/stepy)*stepy;
+
+        x = (x/stepx)*STEPX;
+        y = (y/stepy)*STEPY;
 		
 		remplitPoint(x, y);
 
@@ -166,7 +173,7 @@ void CEditWidget::zapLigne(void) {
 
         for(j=0;j<list->size();j++) {
             if(list->at(j)->y > y) {
-                list->at(j)->y-=STEPY;
+                list->at(j)->y-=stepy;
             }
         }
 
@@ -183,7 +190,7 @@ void CEditWidget::addLigne(void) {
 
         for(j=0;j<list->size();j++) {
             if(list->at(j)->y > y) {
-                list->at(j)->y+=STEPY;
+                list->at(j)->y+=stepy;
             }
         }
 
@@ -192,7 +199,7 @@ void CEditWidget::addLigne(void) {
                 SPoint *p = new SPoint;
 
                 p->x = list->at(j)->x;
-                p->y = y+STEPY;
+                p->y = y+stepy;
                 p->coul = list->at(j)->coul;
 
                 list->append(p);
@@ -209,7 +216,7 @@ void CEditWidget::plusX(void) {
         int i;
 
         for(i=0;i<list->size();i++) {
-            list->at(i)->x+=STEPX;
+            list->at(i)->x+=stepx;
         }
 
         repaint();
@@ -222,7 +229,7 @@ void CEditWidget::moinsX(void) {
         int i;
 
         for(i=0;i<list->size();i++) {
-            list->at(i)->x-=STEPX;
+            list->at(i)->x-=stepx;
         }
 
         repaint();
@@ -235,7 +242,7 @@ void CEditWidget::plusY(void) {
         int i;
 
         for(i=0;i<list->size();i++) {
-            list->at(i)->y+=STEPY;
+            list->at(i)->y+=stepy;
         }
 
         repaint();
@@ -248,7 +255,7 @@ void CEditWidget::moinsY(void) {
         int i;
 
         for(i=0;i<list->size();i++) {
-            list->at(i)->y-=STEPY;
+            list->at(i)->y-=stepy;
         }
 
         repaint();
@@ -335,6 +342,13 @@ void CEditWidget::dedouble(void) {
     repaint();
 }
 //-----------------------------------------------------------------------------------------------
+void CEditWidget::setSteps(int stepx, int stepy) {
+    this->stepx = stepx;
+    this->stepy = stepy;
+
+    repaint();
+}
+//-----------------------------------------------------------------------------------------------
 void CEditWidget::paintEvent(QPaintEvent *) {
     QPainter painter(this);
     QRect rect = geometry();
@@ -346,19 +360,19 @@ void CEditWidget::paintEvent(QPaintEvent *) {
     painter.setBrush(Qt::white);
     painter.setPen(linePen);
 
-    for(y=zeroY;y>0;y-=STEPY) {
+    for(y=zeroY;y>0;y-=stepy) {
         painter.drawLine(1, y, rect.width()-1, y);
     }
 
-    for(y=zeroY+STEPY;y<rect.height();y+=STEPY) {
+    for(y=zeroY+stepy;y<rect.height();y+=stepy) {
         painter.drawLine(1, y, rect.width()-1, y);
     }
 
-    for(x=zeroX;x>0;x-=STEPX) {
+    for(x=zeroX;x>0;x-=stepx) {
         painter.drawLine(x, 1, x, rect.height()-1);
     }
 
-    for(x=zeroX+STEPX;x<rect.width();x+=STEPX) {
+    for(x=zeroX+stepx;x<rect.width();x+=stepx) {
         painter.drawLine(x, 1, x, rect.height()-1);
     }
 
@@ -376,8 +390,8 @@ void CEditWidget::paintEvent(QPaintEvent *) {
 }
 //-----------------------------------------------------------------------------------------------
 void CEditWidget::mouseMoveEvent(QMouseEvent * event) {
-    int x = ((event->x() - zeroX) / STEPX)*STEPX;
-    int y = ((event->y() - zeroY) / STEPY)*STEPY;
+    int x = ((event->x() - zeroX) / stepx)*stepx;
+    int y = ((event->y() - zeroY) / stepy)*stepy;
 
     if(x != mouseX || y != mouseY) {
         mouseX = x;
@@ -386,13 +400,13 @@ void CEditWidget::mouseMoveEvent(QMouseEvent * event) {
         if(mousePressed && selectedList != -1 && selectedPoints.size() == 1) {
             SPoint *p = map->at(selectedList)->at(selectedPoints.at(0));
 
-            p->x = mouseX;
-            p->y = mouseY;
+            p->x = x;
+            p->y = y;
 
             repaint();
         }
 
-        emit(mouseMove(x, y));
+        emit(mouseMove((x/stepx)*STEPX, (y/stepy)*STEPY));
     }
 }
 //-----------------------------------------------------------------------------------------------
@@ -410,11 +424,14 @@ void CEditWidget::mousePressEvent(QMouseEvent * event) {
         bool pointSelected = false;
 
 
-        x += x < 0 ? -STEPX/2 : STEPX/2;
-        y += y < 0 ? -STEPX/2 : STEPX/2;
+        x += x < 0 ? -stepx/2 : stepx/2;
+        y += y < 0 ? -stepy/2 : stepy/2;
 
-        x = (x/STEPX)*STEPX;
-        y = (y/STEPX)*STEPX;
+        x = (x/stepx)*stepx;
+        y = (y/stepy)*stepy;
+
+        x = (x/stepx)*STEPX;
+        y = (y/stepy)*STEPY;
 
         for(i=0;i<map->size();i++) {
             QList<SPoint *> *list = map->at(i);
@@ -531,7 +548,7 @@ void CEditWidget::remplir(SPoint *p) {
 
     newP = new SPoint;
     newP->coul = p->coul;
-    newP->x = p->x+STEPX;
+    newP->x = p->x+stepx;
     newP->y = p->y;
     if(!inList(newP, &newPIdx)) {
         list->append(newP);
@@ -541,7 +558,7 @@ void CEditWidget::remplir(SPoint *p) {
     }
 
     newP->coul = p->coul;
-    newP->x = p->x-STEPX;
+    newP->x = p->x-stepx;
     newP->y = p->y;
     if(!inList(newP, &newPIdx)) {
         list->append(newP);
@@ -553,7 +570,7 @@ void CEditWidget::remplir(SPoint *p) {
 
     newP->coul = p->coul;
     newP->x = p->x;
-    newP->y = p->y+STEPY;
+    newP->y = p->y+stepy;
     if(!inList(newP, &newPIdx)) {
         list->append(newP);
 
@@ -563,7 +580,7 @@ void CEditWidget::remplir(SPoint *p) {
 
     newP->coul = p->coul;
     newP->x = p->x;
-    newP->y = p->y-STEPY;
+    newP->y = p->y-stepy;
     if(!inList(newP, &newPIdx)) {
         list->append(newP);
 
@@ -580,24 +597,24 @@ bool CEditWidget::isContour(SPoint *p) {
     int tPIdx;
 
     tP.x = p->x;
-    tP.y = p->y - STEPY;
+    tP.y = p->y - stepy;
     if(!inList(&tP, &tPIdx)) {
         return true;
     }
 
-    tP.x = p->x + STEPX;
+    tP.x = p->x + stepx;
     tP.y = p->y;
     if(!inList(&tP, &tPIdx)) {
         return true;
     }
 
     tP.x = p->x;
-    tP.y = p->y + STEPY;
+    tP.y = p->y + stepy;
     if(!inList(&tP, &tPIdx)) {
         return true;
     }
 
-    tP.x = p->x - STEPX;
+    tP.x = p->x - stepx;
     tP.y = p->y;
     if(!inList(&tP, &tPIdx)) {
         return true;
@@ -623,13 +640,13 @@ void CEditWidget::draw(QList<QList<SPoint *>*> *map, bool real, QPainter *painte
                 painter->setBrush(brush);
 
 
-                painter->drawEllipse(p->x+zeroX-STEPX/4, p->y+zeroY-STEPY/4, STEPX/2, STEPY/2);
+                painter->drawEllipse((p->x/STEPX)*stepx+zeroX-stepx/4, (p->y/STEPY)*stepy+zeroY-stepy/4, stepx/2, stepy/2);
 
                 if(i == selectedList && selectedPoints.contains(j)) {
                     painter->setPen(selectedPen);
                     painter->setBrush(Qt::NoBrush);
 
-                    painter->drawEllipse(p->x+zeroX-STEPX/2, p->y+zeroY-STEPY/2, STEPX, STEPY);
+                    painter->drawEllipse((p->x/STEPX)*stepx+zeroX-stepx/2, (p->y/STEPY)*stepy+zeroY-stepy/2, stepx, stepy);
                 }
             }
         }
@@ -661,9 +678,9 @@ void CEditWidget::remplitPoint(int x, int y) {
 	
 	list->append(p);
 	
-	remplitPoint(x + STEPX, y);
-	remplitPoint(x - STEPX, y);
-	remplitPoint(x, y + STEPY);
-	remplitPoint(x, y - STEPY);
+    remplitPoint(x + STEPX, y);
+    remplitPoint(x - STEPX, y);
+    remplitPoint(x, y + STEPY);
+    remplitPoint(x, y - STEPY);
 }
 //-----------------------------------------------------------------------------------------------

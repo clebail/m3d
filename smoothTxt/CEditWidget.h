@@ -27,6 +27,7 @@ class CEditWidget : public QWidget {
         void setShowInverse(bool inverse);
         void setShowDessus(bool show);
         void dedouble(void);
+        void setSteps(int stepx, int stepy);
     protected:
         virtual void paintEvent(QPaintEvent * event);
         virtual void mouseMoveEvent(QMouseEvent * event);
@@ -42,6 +43,7 @@ class CEditWidget : public QWidget {
         bool mousePressed;
         QList<int> selectedPoints;
         bool showDessus, showInverse;
+        int stepx, stepy;
 
         QColor getColor(QString coul);
          bool inList(SPoint *p, int *pos);
@@ -50,7 +52,7 @@ class CEditWidget : public QWidget {
         void remplir(SPoint *p);
         bool isContour(SPoint *p);
         void draw(QList<QList<SPoint *>*> *map, bool real, QPainter *painter);
-		void remplitPoint(int x, int y);
+		void remplitPoint(int x, int y);        
     signals:
         void mouseMove(int x, int y);
 };
