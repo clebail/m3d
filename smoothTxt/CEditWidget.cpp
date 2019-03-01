@@ -27,8 +27,8 @@ CEditWidget::CEditWidget(QWidget *parent) : QWidget(parent) {
     mousePressed = false;
     showDessus = false;
     showInverse = false;
-    stepx = 10;//STEPX;
-    stepy = 10;//STEPY;
+    stepx = STEPX;
+    stepy = STEPY;
 }
 //-----------------------------------------------------------------------------------------------
 void CEditWidget::setMaps(QList<QList<SPoint *>*> *map, QList<QList<SPoint *>*> *mDessus) {
