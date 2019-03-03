@@ -356,3 +356,7 @@ void CMainWindow::on_pbDouble_clicked(bool) {
     editWidget->dedouble();
 }
 //-----------------------------------------------------------------------------------------------
+void CMainWindow::on_sbTaillePoint_valueChanged(int i) {
+    editWidget->setSteps(i, i);
+}
+//-----------------------------------------------------------------------------------------------

@@ -404,6 +404,26 @@
                  </widget>
                 </item>
                 <item>
+                 <widget class="QLabel" name="lbTaillePoint">
+                  <property name="text">
+                   <string>Taille des points</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QSpinBox" name="sbTaillePoint">
+                  <property name="minimum">
+                   <number>5</number>
+                  </property>
+                  <property name="maximum">
+                   <number>30</number>
+                  </property>
+                  <property name="value">
+                   <number>15</number>
+                  </property>
+                 </widget>
+                </item>
+                <item>
                  <spacer name="horizontalSpacer_3">
                   <property name="orientation">
                    <enum>Qt::Horizontal</enum>
@@ -442,8 +462,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>1098</width>
-            <height>506</height>
+            <width>1091</width>
+            <height>509</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_3">
