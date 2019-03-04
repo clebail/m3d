@@ -29,6 +29,7 @@ CEditWidget::CEditWidget(QWidget *parent) : QWidget(parent) {
     showInverse = false;
     stepx = STEPX;
     stepy = STEPY;
+    showLine = showRow = false;
 }
 //-----------------------------------------------------------------------------------------------
 void CEditWidget::setMaps(QList<QList<SPoint *>*> *map, QList<QList<SPoint *>*> *mDessus) {
@@ -349,30 +350,74 @@ void CEditWidget::setSteps(int stepx, int stepy) {
     repaint();
 }
 //-----------------------------------------------------------------------------------------------
+void CEditWidget::setShows(bool line, bool row) {
+    showLine = line;
+    showRow = row;
+
+    repaint();
+}
+//-----------------------------------------------------------------------------------------------
 void CEditWidget::paintEvent(QPaintEvent *) {
     QPainter painter(this);
     QRect rect = geometry();
-    QPen linePen(Qt::black);
+    QPen linePen(Qt::DotLine);
     int x, y;
 
-    linePen.setStyle(Qt::DotLine);
+    painter.setBrush(Qt::white);
+    painter.setPen(Qt::white);
+    painter.drawRect(rect);
 
     painter.setBrush(Qt::white);
-    painter.setPen(linePen);
 
     for(y=zeroY;y>0;y-=stepy) {
+        if(y == mouseY+zeroY && showRow) {
+            linePen.setColor(Qt::red);
+            linePen.setStyle(Qt::SolidLine);
+        } else {
+            linePen.setColor(Qt::black);
+            linePen.setStyle(Qt::DotLine);
+        }
+        painter.setPen(linePen);
+
         painter.drawLine(1, y, rect.width()-1, y);
     }
 
     for(y=zeroY+stepy;y<rect.height();y+=stepy) {
+        if(y == mouseY+zeroY && showRow) {
+            linePen.setColor(Qt::red);
+            linePen.setStyle(Qt::SolidLine);
+        } else {
+            linePen.setColor(Qt::black);
+            linePen.setStyle(Qt::DotLine);
+        }
+        painter.setPen(linePen);
+
         painter.drawLine(1, y, rect.width()-1, y);
     }
 
     for(x=zeroX;x>0;x-=stepx) {
+        if(x == mouseX+zeroX && showLine) {
+            linePen.setColor(Qt::red);
+            linePen.setStyle(Qt::SolidLine);
+        } else {
+            linePen.setColor(Qt::black);
+            linePen.setStyle(Qt::DotLine);
+        }
+        painter.setPen(linePen);
+
         painter.drawLine(x, 1, x, rect.height()-1);
     }
 
     for(x=zeroX+stepx;x<rect.width();x+=stepx) {
+        if(x == mouseX+zeroX  && showLine) {
+            linePen.setColor(Qt::red);
+            linePen.setStyle(Qt::SolidLine);
+        } else {
+            linePen.setColor(Qt::black);
+            linePen.setStyle(Qt::DotLine);
+        }
+        painter.setPen(linePen);
+
         painter.drawLine(x, 1, x, rect.height()-1);
     }
 
@@ -406,13 +451,17 @@ void CEditWidget::mouseMoveEvent(QMouseEvent * event) {
             repaint();
         }
 
+        if(showLine || showRow) {
+            repaint();
+        }
+
         emit(mouseMove((x/stepx)*STEPX, (y/stepy)*STEPY));
     }
 }
 //-----------------------------------------------------------------------------------------------
 void CEditWidget::resizeEvent(QResizeEvent * event) {
-    zeroX = event->size().width()/2;
-    zeroY = event->size().height()/2;
+    zeroX = ((event->size().width()/2)/stepx)*stepx;
+    zeroY = ((event->size().height()/2)/stepy)*stepy;
 }
 //-----------------------------------------------------------------------------------------------
 void CEditWidget::mousePressEvent(QMouseEvent * event) {

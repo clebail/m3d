@@ -424,6 +424,20 @@
                  </widget>
                 </item>
                 <item>
+                 <widget class="QCheckBox" name="chkShowLigne">
+                  <property name="text">
+                   <string>Afficher la ligne sous le curseur</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QCheckBox" name="chkShowColonne">
+                  <property name="text">
+                   <string>Afficher la colonne sous le curseur</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
                  <spacer name="horizontalSpacer_3">
                   <property name="orientation">
                    <enum>Qt::Horizontal</enum>
@@ -462,8 +476,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>1091</width>
-            <height>509</height>
+            <width>1098</width>
+            <height>506</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_3">

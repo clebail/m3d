@@ -28,6 +28,7 @@ class CEditWidget : public QWidget {
         void setShowDessus(bool show);
         void dedouble(void);
         void setSteps(int stepx, int stepy);
+        void setShows(bool line, bool row);
     protected:
         virtual void paintEvent(QPaintEvent * event);
         virtual void mouseMoveEvent(QMouseEvent * event);
@@ -44,6 +45,7 @@ class CEditWidget : public QWidget {
         QList<int> selectedPoints;
         bool showDessus, showInverse;
         int stepx, stepy;
+        bool showLine, showRow;
 
         QColor getColor(QString coul);
          bool inList(SPoint *p, int *pos);

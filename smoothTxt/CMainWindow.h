@@ -49,6 +49,8 @@ class CMainWindow : public QMainWindow, private Ui::CMainWindow {
         void on_pb3d_clicked(bool checked = false);
         void on_pbDouble_clicked(bool checked = false);
         void on_sbTaillePoint_valueChanged(int i);
+        void on_chkShowLigne_clicked(bool checked = false);
+        void on_chkShowColonne_clicked(bool checked = false);
 };
 //-----------------------------------------------------------------------------------------------
 #endif // __CMAINWINDOW_H__

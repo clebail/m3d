@@ -360,3 +360,11 @@ void CMainWindow::on_sbTaillePoint_valueChanged(int i) {
     editWidget->setSteps(i, i);
 }
 //-----------------------------------------------------------------------------------------------
+void CMainWindow::on_chkShowLigne_clicked(bool) {
+    editWidget->setShows(chkShowLigne->isChecked(), chkShowColonne->isChecked());
+}
+//-----------------------------------------------------------------------------------------------
+void CMainWindow::on_chkShowColonne_clicked(bool) {
+    editWidget->setShows(chkShowLigne->isChecked(), chkShowColonne->isChecked());
+}
+//-----------------------------------------------------------------------------------------------
