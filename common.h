@@ -26,6 +26,16 @@ typedef struct _SPoint {
 	int x,y;
     QString coul;
 
+    _SPoint(void) {
+        this->x = 0;
+        this->y = 0;
+    }
+
+    _SPoint(int x, int y) {
+        this->x = x;
+        this->y = y;
+    }
+
     bool operator==(struct _SPoint const& other) {
         return x == other.x && y == other.y;
     }

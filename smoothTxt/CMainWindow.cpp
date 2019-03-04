@@ -9,6 +9,9 @@
 #include "CChooseColorDialog.h"
 #include "C3dPreview.h"
 //-----------------------------------------------------------------------------------------------
+#define MAX_POINT_X                     200
+#define MAX_POINT_Y                     200
+//-----------------------------------------------------------------------------------------------
 CMainWindow::CMainWindow(QString projet, QWidget *parent) : QMainWindow(parent) {
     setupUi(this);
 
@@ -18,13 +21,10 @@ CMainWindow::CMainWindow(QString projet, QWidget *parent) : QMainWindow(parent) 
     sbArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
     sbArea->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
 
-    stepx = STEPX;
-    stepy = STEPY;
-
-    sbArea->widget()->setMinimumWidth(200*stepx);
-    sbArea->widget()->setMinimumHeight(200*stepy);
-    sbArea->widget()->setMaximumWidth(200*stepx);
-    sbArea->widget()->setMaximumHeight(200*stepy);
+    sbArea->widget()->setMinimumWidth(MAX_POINT_X * STEPX);
+    sbArea->widget()->setMinimumHeight(MAX_POINT_Y * STEPY);
+    sbArea->widget()->setMaximumWidth(MAX_POINT_X * STEPX);
+    sbArea->widget()->setMaximumHeight(MAX_POINT_Y * STEPY);
 
     loadLayers();
 }
@@ -122,11 +122,11 @@ void CMainWindow::showLayer(QString layerName) {
     editWidget->setMaps(map->value(layerName), map->value(lDessus));
     getMapCenter(map->value(layerName), center);
 
-    bx = 100.0 * stepx;
-    by = 100.0 * stepy;
+    bx = 100.0 * STEPX;
+    by = 100.0 * STEPY;
 
-    ax = sbArea->horizontalScrollBar()->maximum() / (200.0 * stepx);
-    ay = sbArea->verticalScrollBar()->maximum() / (200.0 * stepy);
+    ax = sbArea->horizontalScrollBar()->maximum() / (static_cast<double>(MAX_POINT_X) * STEPX);
+    ay = sbArea->verticalScrollBar()->maximum() / (static_cast<double>(MAX_POINT_Y) * STEPY);
 
     sbArea->horizontalScrollBar()->setValue(static_cast<int>(center.x() * ax + bx - sbArea->size().width() / 2));
     sbArea->verticalScrollBar()->setValue(static_cast<int>(center.y() * ay + by - sbArea->size().height() / 2));
@@ -366,5 +366,13 @@ void CMainWindow::on_chkShowLigne_clicked(bool) {
 //-----------------------------------------------------------------------------------------------
 void CMainWindow::on_chkShowColonne_clicked(bool) {
     editWidget->setShows(chkShowLigne->isChecked(), chkShowColonne->isChecked());
+}
+//-----------------------------------------------------------------------------------------------
+void CMainWindow::on_pbDiffX_clicked(bool) {
+
+}
+//-----------------------------------------------------------------------------------------------
+void CMainWindow::on_pbDiffY_clicked(bool) {
+    editWidget->diffY();
 }
 //-----------------------------------------------------------------------------------------------

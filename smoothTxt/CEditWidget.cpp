@@ -39,6 +39,7 @@ void CEditWidget::setMaps(QList<QList<SPoint *>*> *map, QList<QList<SPoint *>*> 
     selectedList = -1;
     selectedPoints.clear();
     mousePressed = false;
+    clearDiffs();
 
     repaint();
 }
@@ -134,7 +135,7 @@ void CEditWidget::setColor(QString color) {
 }
 //-----------------------------------------------------------------------------------------------
 void CEditWidget::remplir(void) {
-	if(map != 0 && selectedList != -1) {
+    if(map != nullptr && selectedList != -1) {
 		QPoint p = mapFromGlobal(QCursor::pos());
 
 		int x = p.x() - zeroX;
@@ -357,6 +358,68 @@ void CEditWidget::setShows(bool line, bool row) {
     repaint();
 }
 //-----------------------------------------------------------------------------------------------
+void CEditWidget::diffY(void) {
+    if(map != nullptr) {
+        int yMin = 0, yMax = 0;
+        int y1, y2;
+        bool first = true;
+
+        clearDiffs();
+
+        for(int i=0;i<map->size();i++) {
+            QList<SPoint *> *points = map->at(i);
+
+            for(int j=0;j<points->size();j++) {
+                SPoint *point = points->at(j);
+
+                if(first || point->y < yMin) {
+                    yMin = point->y;
+                }
+
+                if(first || point->y > yMax) {
+                    yMax = point->y;
+                }
+
+                first = false;
+            }
+        }
+
+        for(y1=yMin, y2=yMax;y1 < y2;y1++,y2--) {
+            SPoint *point1 = nullptr, *point2 = nullptr;
+
+            for(int i=0;i<map->size();i++) {
+                QList<SPoint *> *points = map->at(i);
+
+                for(int j=0;j<points->size();j++) {
+                    SPoint *point = points->at(j);
+
+                    if(point->y == y1) {
+                        point1 = point;
+                        point2 = find(point->x, y2);
+
+                        if(point2 == nullptr || point2->coul != point1->coul) {
+                            qDebug() << "diff " << point1->x << point1->y;
+
+                            diffs.append(new SPoint(point1->x, point1->y));
+                            diffs.append(new SPoint(point1->x, y2));
+                        }
+                    } else if(point->y == y2) {
+                        point2 = point;
+                        point1 = find(point->x, y1);
+
+                        if(point1 == nullptr || point1->coul != point2->coul) {
+                            qDebug() << "diff " << point2->x << point2->y;
+
+                            diffs.append(new SPoint(point2->x, point2->y));
+                            diffs.append(new SPoint(point2->x, y1));
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+//-----------------------------------------------------------------------------------------------
 void CEditWidget::paintEvent(QPaintEvent *) {
     QPainter painter(this);
     QRect rect = geometry();
@@ -445,8 +508,8 @@ void CEditWidget::mouseMoveEvent(QMouseEvent * event) {
         if(mousePressed && selectedList != -1 && selectedPoints.size() == 1) {
             SPoint *p = map->at(selectedList)->at(selectedPoints.at(0));
 
-            p->x = x;
-            p->y = y;
+            p->x = (x/stepx)*STEPX;
+            p->y = (y/stepy)*STEPY;
 
             repaint();
         }
@@ -731,5 +794,29 @@ void CEditWidget::remplitPoint(int x, int y) {
     remplitPoint(x - STEPX, y);
     remplitPoint(x, y + STEPY);
     remplitPoint(x, y - STEPY);
+}
+//-----------------------------------------------------------------------------------------------
+SPoint * CEditWidget::find(int x, int y) {
+    for(int i=0;i<map->size();i++) {
+        QList<SPoint *> *points = map->at(i);
+
+        for(int j=0;j<points->size();j++) {
+            SPoint *point = points->at(j);
+
+            if(point->x == x && point->y == y) {
+                return point;
+            }
+        }
+    }
+
+    return nullptr;
+}
+//-----------------------------------------------------------------------------------------------
+void CEditWidget::clearDiffs(void) {
+    for(int i=0;i<diffs.size();i++) {
+        delete diffs.takeAt(i);
+    }
+
+    diffs.clear();
 }
 //-----------------------------------------------------------------------------------------------

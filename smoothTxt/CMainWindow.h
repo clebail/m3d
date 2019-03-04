@@ -17,7 +17,6 @@ class CMainWindow : public QMainWindow, private Ui::CMainWindow {
     private:      
         QHash<QString, QList<QList<SPoint *>*>*> *map;
         QString projet;
-        int stepx, stepy;
 
         void loadLayers(void);
         void loadLayer(QString layerName, bool force = false);
@@ -51,6 +50,8 @@ class CMainWindow : public QMainWindow, private Ui::CMainWindow {
         void on_sbTaillePoint_valueChanged(int i);
         void on_chkShowLigne_clicked(bool checked = false);
         void on_chkShowColonne_clicked(bool checked = false);
+        void on_pbDiffX_clicked(bool checked = false);
+        void on_pbDiffY_clicked(bool checked = false);
 };
 //-----------------------------------------------------------------------------------------------
 #endif // __CMAINWINDOW_H__
