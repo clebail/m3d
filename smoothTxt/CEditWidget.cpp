@@ -418,6 +418,8 @@ void CEditWidget::diffY(void) {
             }
         }
     }
+
+    repaint();
 }
 //-----------------------------------------------------------------------------------------------
 void CEditWidget::paintEvent(QPaintEvent *) {
@@ -482,6 +484,22 @@ void CEditWidget::paintEvent(QPaintEvent *) {
         painter.setPen(linePen);
 
         painter.drawLine(x, 1, x, rect.height()-1);
+    }
+
+    if(diffs.size() != 0) {
+        QBrush brush(Qt::BDiagPattern);
+
+        brush.setColor(Qt::red);
+        painter.setBrush(brush);
+        painter.setPen(Qt::black);
+
+        for(int i = 0;i<diffs.size();i++) {
+            SPoint *p = diffs.at(i);
+
+            int x = (p->x/STEPX)*stepx+zeroX-stepx/4-1;
+            int y = (p->y/STEPY)*stepy+zeroY-stepy/4-1;
+            painter.drawRect(QRect(x, y, stepx/2+2, stepy/2+2));
+        }
     }
 
     if(showDessus) {
@@ -750,7 +768,6 @@ void CEditWidget::draw(QList<QList<SPoint *>*> *map, bool real, QPainter *painte
 
                 painter->setPen(Qt::black);
                 painter->setBrush(brush);
-
 
                 painter->drawEllipse((p->x/STEPX)*stepx+zeroX-stepx/4, (p->y/STEPY)*stepy+zeroY-stepy/4, stepx/2, stepy/2);
 
