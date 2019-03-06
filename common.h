@@ -14,10 +14,10 @@
 #define STEPY				(IMAGE_HEIGHT/NB_PAS)
 #define STEPX				(IMAGE_WIDTH/NB_PAS)
 #define STEPZ				15
-#define PI					((double)3.14159)
+#define PI					(3.14159)
 #define SURFACE_CASE		(STEPX*STEPY/2)
 #define OFFSET_ANGLE		2
-#define ROND_COEF			((double)0.3075)
+#define ROND_COEF			(0.3075)
 #define TXTS_FOLDER         (QString("../txts/"))
 #define SVGS_FOLDER         (QString("../svgs/"))
 #define LDRS_FOLDER         (QString("../ldrs/"))
