@@ -369,10 +369,14 @@ void CMainWindow::on_chkShowColonne_clicked(bool) {
 }
 //-----------------------------------------------------------------------------------------------
 void CMainWindow::on_pbDiffX_clicked(bool) {
-
+    editWidget->diffX();
 }
 //-----------------------------------------------------------------------------------------------
 void CMainWindow::on_pbDiffY_clicked(bool) {
     editWidget->diffY();
+}
+//-----------------------------------------------------------------------------------------------
+void CMainWindow::on_pbClearDiff_clicked(bool ) {
+    editWidget->clearDiffs();
 }
 //-----------------------------------------------------------------------------------------------

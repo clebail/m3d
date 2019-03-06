@@ -398,8 +398,6 @@ void CEditWidget::diffY(void) {
                         point2 = find(point->x, y2);
 
                         if(point2 == nullptr || point2->coul != point1->coul) {
-                            qDebug() << "diff " << point1->x << point1->y;
-
                             diffs.append(new SPoint(point1->x, point1->y));
                             diffs.append(new SPoint(point1->x, y2));
                         }
@@ -408,10 +406,68 @@ void CEditWidget::diffY(void) {
                         point1 = find(point->x, y1);
 
                         if(point1 == nullptr || point1->coul != point2->coul) {
-                            qDebug() << "diff " << point2->x << point2->y;
-
                             diffs.append(new SPoint(point2->x, point2->y));
                             diffs.append(new SPoint(point2->x, y1));
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    repaint();
+}
+//-----------------------------------------------------------------------------------------------
+void CEditWidget::diffX(void) {
+    if(map != nullptr) {
+        int xMin = 0, xMax = 0;
+        int x1, x2;
+        bool first = true;
+
+        clearDiffs();
+
+        for(int i=0;i<map->size();i++) {
+            QList<SPoint *> *points = map->at(i);
+
+            for(int j=0;j<points->size();j++) {
+                SPoint *point = points->at(j);
+
+                if(first || point->x < xMin) {
+                    xMin = point->x;
+                }
+
+                if(first || point->x > xMax) {
+                    xMax = point->x;
+                }
+
+                first = false;
+            }
+        }
+
+        for(x1=xMin, x2=xMax;x1 < x2;x1++, x2--) {
+            SPoint *point1 = nullptr, *point2 = nullptr;
+
+            for(int i=0;i<map->size();i++) {
+                QList<SPoint *> *points = map->at(i);
+
+                for(int j=0;j<points->size();j++) {
+                    SPoint *point = points->at(j);
+
+                    if(point->x == x1) {
+                        point1 = point;
+                        point2 = find(x2, point->y);
+
+                        if(point2 == nullptr || point2->coul != point1->coul) {
+                            diffs.append(new SPoint(point1->x, point1->y));
+                            diffs.append(new SPoint(x2, point1->y));
+                        }
+                    } else if(point->x == x2) {
+                        point2 = point;
+                        point1 = find(x1, point->y);
+
+                        if(point1 == nullptr || point1->coul != point2->coul) {
+                            diffs.append(new SPoint(point2->x, point2->y));
+                            diffs.append(new SPoint(x1, point2->y));
                         }
                     }
                 }
@@ -487,7 +543,7 @@ void CEditWidget::paintEvent(QPaintEvent *) {
     }
 
     if(diffs.size() != 0) {
-        QBrush brush(Qt::BDiagPattern);
+        QBrush brush(Qt::Dense5Pattern);
 
         brush.setColor(Qt::red);
         painter.setBrush(brush);
@@ -835,5 +891,7 @@ void CEditWidget::clearDiffs(void) {
     }
 
     diffs.clear();
+
+    repaint();
 }
 //-----------------------------------------------------------------------------------------------

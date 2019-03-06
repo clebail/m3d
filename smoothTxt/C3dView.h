@@ -23,10 +23,12 @@ public:
     void paintGL();
     void setMap(QList<SFace *> map);
     void setRotate(float rotX, float rotY, float rotZ);
+    void setTranslate(float tX, float tY);
 protected:
     virtual void wheelEvent(QWheelEvent * event);
 private:
     float rotX, rotY, rotZ;
+    float tX, tY;
     QPoint lastPos;
     float scale;
     QList<SFace *> map;

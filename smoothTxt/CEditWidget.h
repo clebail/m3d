@@ -30,6 +30,8 @@ class CEditWidget : public QWidget {
         void setSteps(int stepx, int stepy);
         void setShows(bool line, bool row);
         void diffY(void);
+        void diffX(void);
+        void clearDiffs(void);
     protected:
         virtual void paintEvent(QPaintEvent * event);
         virtual void mouseMoveEvent(QMouseEvent * event);
@@ -58,7 +60,6 @@ class CEditWidget : public QWidget {
         void draw(QList<QList<SPoint *>*> *map, bool real, QPainter *painter);
         void remplitPoint(int x, int y);
         SPoint * find(int x, int y);
-        void clearDiffs(void);
     signals:
         void mouseMove(int x, int y);
 };

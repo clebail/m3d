@@ -52,6 +52,7 @@ class CMainWindow : public QMainWindow, private Ui::CMainWindow {
         void on_chkShowColonne_clicked(bool checked = false);
         void on_pbDiffX_clicked(bool checked = false);
         void on_pbDiffY_clicked(bool checked = false);
+        void on_pbClearDiff_clicked(bool checked = false);
 };
 //-----------------------------------------------------------------------------------------------
 #endif // __CMAINWINDOW_H__

@@ -6,6 +6,7 @@
 //-----------------------------------------------------------------------------------------------
 C3dView::C3dView(QWidget *parent) : QGLWidget(parent) {
     rotX = rotY = rotZ = 0.0;
+    tX = tY = 0.0;
     scale = 1.0f;
 }
 //-----------------------------------------------------------------------------------------------
@@ -30,7 +31,7 @@ void C3dView::paintGL() {
     if(map.size()) {
         glMatrixMode(GL_MODELVIEW);
         glLoadIdentity();
-        glTranslatef(0.0, 0.0, -10.0);
+        glTranslatef(tX, tY, -10.0);
 
         glRotatef(rotX, 1.0, 0.0, 0.0);
         glRotatef(rotY, 0.0, 1.0, 0.0);
@@ -76,6 +77,13 @@ void C3dView::setRotate(float rotX, float rotY, float rotZ) {
     this->rotX = rotX;
     this->rotY = rotY;
     this->rotZ = rotZ;
+
+    updateGL();
+}
+//-----------------------------------------------------------------------------------------------
+void C3dView::setTranslate(float tX, float tY) {
+    this->tX = tX;
+    this->tY = tY;
 
     updateGL();
 }

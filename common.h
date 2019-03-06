@@ -2,6 +2,7 @@
 #define __COMMON_H__
 
 #include <QString>
+#include <QColor>
 #include <QtDebug>
 #include <math.h>
 
