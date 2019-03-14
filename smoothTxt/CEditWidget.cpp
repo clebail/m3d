@@ -44,10 +44,21 @@ void CEditWidget::setMaps(QList<QList<SPoint *>*> *map, QList<QList<SPoint *>*> 
     repaint();
 }
 //-----------------------------------------------------------------------------------------------
-void CEditWidget::dropCurrentPoint(void) {
+void CEditWidget::dropCurrentPoint(bool contigue) {
     if(map != nullptr && selectedList != -1 && selectedPoints.size() != 0) {
         int last;
         int i;
+
+        if(contigue) {
+            if(selectedPoints.size() == 1) {
+                SPoint *p = map->at(selectedList)->at(selectedPoints.at(0));
+
+                selectPoint(p->x + STEPX, p->y, p->coul);
+                selectPoint(p->x - STEPX, p->y, p->coul);
+                selectPoint(p->x, p->y + STEPY, p->coul);
+                selectPoint(p->x, p->y - STEPY, p->coul);
+            }
+        }
 
         qSort(selectedPoints.begin(), selectedPoints.end());
         for(i=selectedPoints.size()-1;i>=0;i--) {
@@ -137,6 +148,9 @@ void CEditWidget::setColor(QString color) {
 void CEditWidget::remplir(void) {
     if(map != nullptr && selectedList != -1) {
 		QPoint p = mapFromGlobal(QCursor::pos());
+        QList<SPoint *> *list = map->at(selectedList);
+        int i;
+        QString coul = "";
 
 		int x = p.x() - zeroX;
 		int y = p.y() - zeroY;
@@ -150,7 +164,16 @@ void CEditWidget::remplir(void) {
         x = (x/stepx)*STEPX;
         y = (y/stepy)*STEPY;
 		
-		remplitPoint(x, y);
+        for(i=0;i<list->size();i++) {
+            SPoint *pv = list->at(i);
+
+            if(pv->x == x && pv->y == y) {
+                coul = pv->coul;
+                break;
+            }
+        }
+
+        remplitPoint(x, y, coul);
 
 		repaint();
 	}
@@ -838,35 +861,74 @@ void CEditWidget::draw(QList<QList<SPoint *>*> *map, bool real, QPainter *painte
     }
 }
 //-----------------------------------------------------------------------------------------------
-void CEditWidget::remplitPoint(int x, int y) {
+void CEditWidget::remplitPoint(int x, int y, QString coul) {
 	QList<SPoint *> *list = map->at(selectedList);
-	SPoint *p;
+    SPoint *p = nullptr;
+    int i;
+    QString newColor;
+
+    if(selectedPoints.size() != 0) {
+        newColor = map->at(selectedList)->at(selectedPoints.at(0))->coul;
+    } else {
+        newColor = "0";
+    }
+
+    if(coul == "") {
+        for(i=0;i<list->size();i++) {
+            SPoint *pv = list->at(i);
+
+            if(pv->x == x && pv->y == y) {
+                return;
+            }
+        }
+    
+        p = new SPoint;
+        p->x = x;
+        p->y = y;
+        p->coul = newColor;
+
+        list->append(p);
+    } else {
+        for(i=0;i<list->size();i++) {
+            SPoint *pv = list->at(i);
+
+            if(pv->x == x && pv->y == y && pv->coul == coul) {
+                p = pv;
+                break;
+            }
+        }
+
+        if(p != nullptr) {
+            p->x = x;
+            p->y = y;
+            p->coul = newColor;
+        }
+    }
+	
+    if(p != nullptr) {
+        remplitPoint(x + STEPX, y, coul);
+        remplitPoint(x - STEPX, y, coul);
+        remplitPoint(x, y + STEPY, coul);
+        remplitPoint(x, y - STEPY, coul);
+    }
+}
+//-----------------------------------------------------------------------------------------------
+void CEditWidget::selectPoint(int x, int y, QString coul) {
+    QList<SPoint *> *list = map->at(selectedList);
     int i;
 
     for(i=0;i<list->size();i++) {
         SPoint *pv = list->at(i);
 
-        if(pv->x == x && pv->y == y) {
-			return;
-		}
+        if(pv->x == x && pv->y == y && pv->coul == coul && !selectedPoints.contains(i)) {
+            selectedPoints.append(i);
+
+            selectPoint(pv->x + STEPX, pv->y, coul);
+            selectPoint(pv->x - STEPX, pv->y, coul);
+            selectPoint(pv->x, pv->y + STEPY, coul);
+            selectPoint(pv->x, pv->y - STEPY, coul);
+        }
     }
-    
-    p = new SPoint;
-	p->x = x;
-	p->y = y;
-	
-	if(selectedPoints.size() != 0) {
-		p->coul = map->at(selectedList)->at(selectedPoints.at(0))->coul;
-	} else {
-		p->coul = "0";
-	}
-	
-	list->append(p);
-	
-    remplitPoint(x + STEPX, y);
-    remplitPoint(x - STEPX, y);
-    remplitPoint(x, y + STEPY);
-    remplitPoint(x, y - STEPY);
 }
 //-----------------------------------------------------------------------------------------------
 SPoint * CEditWidget::find(int x, int y) {

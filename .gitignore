@@ -11,7 +11,10 @@ smoothTxt/Makefile
 smoothTxt/smoothTxt
 images/*.jpg
 svgs/*.svg
-ldrs/*.ldr
+*.ldr
 *.o
 moc_*.*
 ui_*.*
+*.obj
+*.mtl
+*.binvox

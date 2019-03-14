@@ -7,7 +7,7 @@ TARGET = smoothTxt
 DEPENDPATH += .
 INCLUDEPATH += . ..
 QT += opengl
-QMAKE_CXXFLAGS += -std=c++11
+QMAKE_CXXFLAGS += -std=c++11 -fexec-charset=UTF-8 -finput-charset=UTF-8
 
 # Input
 SOURCES += main.cpp \

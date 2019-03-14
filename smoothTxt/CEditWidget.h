@@ -12,7 +12,7 @@ class CEditWidget : public QWidget {
         CEditWidget(QWidget *parent = 0);
 
         void setMaps(QList<QList<SPoint *>*> *map, QList<QList<SPoint *>*> *mDessus);
-        void dropCurrentPoint(void);
+        void dropCurrentPoint(bool contigue = false);
         void addPoint(void);
         void addGroupe(void);
         void setColor(QString color);
@@ -58,7 +58,8 @@ class CEditWidget : public QWidget {
         void remplir(SPoint *p);
         bool isContour(SPoint *p);
         void draw(QList<QList<SPoint *>*> *map, bool real, QPainter *painter);
-        void remplitPoint(int x, int y);
+        void remplitPoint(int x, int y, QString color = "");
+        void selectPoint(int x, int y, QString color);
         SPoint * find(int x, int y);
     signals:
         void mouseMove(int x, int y);

@@ -15,6 +15,8 @@
 CMainWindow::CMainWindow(QString projet, QWidget *parent) : QMainWindow(parent) {
     setupUi(this);
 
+    installEventFilter(this);
+
     this->projet = projet;
     map = new QHash<QString, QList<QList<SPoint *>*>*>();
 
@@ -40,7 +42,11 @@ bool CMainWindow::eventFilter(QObject *object, QEvent *event) {
         QKeyEvent *keyEvent = static_cast<QKeyEvent *>(event);
 
         if(keyEvent->key() == Qt::Key_Delete) {
-            on_pbDropPoint_clicked();
+            if(keyEvent->modifiers() & Qt::ControlModifier) {
+                dropColorPoints();
+            } else {
+                on_pbDropPoint_clicked();
+            }
 
             return true;
         } else if(keyEvent->key() == Qt::Key_F1) {
@@ -213,6 +219,12 @@ void CMainWindow::getMapCenter(QList<QList<SPoint *>*> *list, QPoint &center) {
 
     center.setX(((minX + maxX) / 2) * 1);
     center.setY(((minY + maxY) / 2) * 1);
+}
+//-----------------------------------------------------------------------------------------------
+void CMainWindow::dropColorPoints(void) {
+    if(QMessageBox::question(this, "Confirmation", "Etes vous sûre de vouloir supprimer les points contigues ?", QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes) {
+        editWidget->dropCurrentPoint(true);
+    }
 }
 //-----------------------------------------------------------------------------------------------
 void CMainWindow::on_layerList_currentItemChanged(QListWidgetItem *current, QListWidgetItem *) {

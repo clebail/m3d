@@ -24,6 +24,7 @@ class CMainWindow : public QMainWindow, private Ui::CMainWindow {
         void saveLayer(QString layer, QString fileName);
         void clearLayers(void);
         void getMapCenter(QList<QList<SPoint *>*> *list, QPoint &center);
+        void dropColorPoints(void);
     private slots:
         void on_layerList_currentItemChanged(QListWidgetItem *current, QListWidgetItem *previous);
         void on_pbSave_clicked(bool checked = false);
